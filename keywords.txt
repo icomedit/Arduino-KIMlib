@@ -1,0 +1,3 @@
+KIMaip			KEYWORD1
+DPT				KEYWORD2
+UserParameter	KEYWORD2
