@@ -16,69 +16,69 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <kimlib.h>
+#include "kimlib.h"
 
 #define KNX_DATAREADY     2     // Pin data ready KNX
 #define KNX_BUS          12     // Pin BUS KNX OK
 
-#define LED              13     // Pin LED_BUILTIN
+#define LED_RED          13     // Pin LED_BUILTIN
+#define LED_PWM          10
 #define BUTTON            8     // Pin pulsante S3
 
 // Object definition scope in ETS exacly sequnce respect
-#define OBJ_CMD_LED       0
-#define OBJ_ST_LED        1
-#define OBJ_CMD_BUTTON    2
-#define OBJ_ST_BUTTON     3
+#define OBJ_4             4  // 4Bit Write da BUS
+#define OBJ_5             5  // 4Bit Read da BUS
+
+#define INTERVAL_0        0
+#define INTERVAL_1        1
+#define INTERVAL_2        2
+#define DIRECTION         3
+
+struct Control_Dimming {
+  uint8_t buffer:4;
+} controlDimming;
 
 KIMaip knxIno(KNX_DATAREADY, KNX_BUS);
-DPT cmdLed(OBJ_CMD_LED, &knxIno);
-DPT statLed(OBJ_ST_LED, &knxIno);
-DPT cmdButton(OBJ_CMD_BUTTON, &knxIno);
-DPT statButton(OBJ_ST_BUTTON, &knxIno);
+DPT oby_4(OBJ_4, &knxIno);
+DPT oby_5(OBJ_5, &knxIno);
 
 // variables will change:
-bool oldButtonState = false;         // variable for reading the pushbutton status
 bool buttonPressed = true;
-bool oldLed = false;
-bool oldStatButtonKNX = false;
+byte index = 0;
+byte pwm = 0;
 
 void setup() {
-  pinMode(LED, OUTPUT);
-  digitalWrite(LED, LOW);
+  pinMode(LED_RED, OUTPUT);
+  digitalWrite(LED_RED, LOW);
+  pinMode(LED_PWM, OUTPUT);
+  analogWrite(LED_PWM, pwm);
   pinMode(BUTTON, INPUT_PULLUP); 
 }
 
-void loop() {
-
-  bool newStatButtonKNX;
-  bool ledStatus;
-    
+void loop() { 
   // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
   if ((digitalRead(BUTTON) == LOW) && (buttonPressed == false)) {    
     buttonPressed = true;
-    oldButtonState = !oldButtonState;
-    cmdButton.setValue(oldButtonState);    
+    if (index > 15) index=0;
+    bitWrite(controlDimming.buffer, INTERVAL_0, bitRead(index, INTERVAL_0));
+    bitWrite(controlDimming.buffer, INTERVAL_1, bitRead(index, INTERVAL_1));
+    bitWrite(controlDimming.buffer, INTERVAL_2, bitRead(index, INTERVAL_2));    
+    bitWrite(controlDimming.buffer, DIRECTION, bitRead(index, DIRECTION));
+    oby_5.setValue(controlDimming);
+    index++;
   } 
   
   if (digitalRead(BUTTON) == HIGH) {
     buttonPressed = false;
   }
 
-  if (oldLed != digitalRead(LED)){
-    oldLed = !oldLed;
-    statLed.setValue(oldLed);    
-  }
-  
-  if (knxIno.recive()) {    
-    cmdLed.getValue(ledStatus);
-    digitalWrite(LED, ledStatus);
-    statButton.getValue(newStatButtonKNX);
-    if (oldStatButtonKNX != newStatButtonKNX) {
-      statButton.getValue(oldButtonState);
-      statButton.getValue(oldStatButtonKNX);
-    }
+  if (knxIno.recive()) {
+    oby_4.getValue(controlDimming);
+    digitalWrite(LED_RED, bitRead(controlDimming.buffer, DIRECTION));
+    pwm = controlDimming.buffer & 0x7;
+    pwm = map(pwm, 0, 15, 0, 255);
+    analogWrite(LED_PWM, pwm);
   }
 
-  statLed.responseValue(ledStatus);
-  cmdButton.responseValue(oldButtonState);
+  oby_5.responseValue(controlDimming);
 }

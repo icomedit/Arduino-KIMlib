@@ -21,64 +21,57 @@
 #define KNX_DATAREADY     2     // Pin data ready KNX
 #define KNX_BUS          12     // Pin BUS KNX OK
 
-#define LED              13     // Pin LED_BUILTIN
+#define LED_RED          13     // Pin LED_BUILTIN
+#define LED_GREEN        10
 #define BUTTON            8     // Pin pulsante S3
 
 // Object definition scope in ETS exacly sequnce respect
-#define OBJ_CMD_LED       0
-#define OBJ_ST_LED        1
-#define OBJ_CMD_BUTTON    2
-#define OBJ_ST_BUTTON     3
+#define OBJ_2             2  // 2Bit Write da BUS
+#define OBJ_3             3  // 2Bit Read da BUS
+
+#define VALUE             0	//LSB
+#define BLOCK             1
+
+struct Switch_Control {
+  uint8_t buffer:2;
+} switchControl;
 
 KIMaip knxIno(KNX_DATAREADY, KNX_BUS);
-DPT cmdLed(OBJ_CMD_LED, &knxIno);
-DPT statLed(OBJ_ST_LED, &knxIno);
-DPT cmdButton(OBJ_CMD_BUTTON, &knxIno);
-DPT statButton(OBJ_ST_BUTTON, &knxIno);
+DPT oby_2(OBJ_2, &knxIno);
+DPT oby_3(OBJ_3, &knxIno);
 
 // variables will change:
-bool oldButtonState = false;         // variable for reading the pushbutton status
 bool buttonPressed = true;
-bool oldLed = false;
-bool oldStatButtonKNX = false;
+byte index = 0;
 
 void setup() {
-  pinMode(LED, OUTPUT);
-  digitalWrite(LED, LOW);
+  pinMode(LED_RED, OUTPUT);
+  digitalWrite(LED_RED, LOW);
+  pinMode(LED_GREEN, OUTPUT);
+  digitalWrite(LED_GREEN, LOW);
   pinMode(BUTTON, INPUT_PULLUP); 
 }
 
 void loop() {
-
-  bool newStatButtonKNX;
-  bool ledStatus;
-    
   // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
   if ((digitalRead(BUTTON) == LOW) && (buttonPressed == false)) {    
     buttonPressed = true;
-    oldButtonState = !oldButtonState;
-    cmdButton.setValue(oldButtonState);    
+    if (index > 3) index=0;
+    bitWrite(switchControl.buffer, VALUE, bitRead(index, VALUE));
+    bitWrite(switchControl.buffer, BLOCK, bitRead(index, BLOCK));
+    oby_3.setValue(switchControl);
+    index++;
   } 
   
   if (digitalRead(BUTTON) == HIGH) {
     buttonPressed = false;
   }
 
-  if (oldLed != digitalRead(LED)){
-    oldLed = !oldLed;
-    statLed.setValue(oldLed);    
-  }
-  
-  if (knxIno.recive()) {    
-    cmdLed.getValue(ledStatus);
-    digitalWrite(LED, ledStatus);
-    statButton.getValue(newStatButtonKNX);
-    if (oldStatButtonKNX != newStatButtonKNX) {
-      statButton.getValue(oldButtonState);
-      statButton.getValue(oldStatButtonKNX);
-    }
+  if (knxIno.recive()) {
+    oby_2.getValue(switchControl);
+    digitalWrite(LED_RED, bitRead(switchControl.buffer, VALUE));
+    digitalWrite(LED_GREEN, bitRead(switchControl.buffer, BLOCK));
   }
 
-  statLed.responseValue(ledStatus);
-  cmdButton.responseValue(oldButtonState);
+  oby_3.responseValue(switchControl);
 }

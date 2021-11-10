@@ -21,64 +21,49 @@
 #define KNX_DATAREADY     2     // Pin data ready KNX
 #define KNX_BUS          12     // Pin BUS KNX OK
 
-#define LED              13     // Pin LED_BUILTIN
 #define BUTTON            8     // Pin pulsante S3
 
 // Object definition scope in ETS exacly sequnce respect
-#define OBJ_CMD_LED       0
-#define OBJ_ST_LED        1
-#define OBJ_CMD_BUTTON    2
-#define OBJ_ST_BUTTON     3
+#define OBJ_6             6  // 8Bit Write da BUS
+#define OBJ_7             7  // 8Bit Read da BUS
+
+#define SERIAL_BIT_RATE   115200 // Velocità della seriale
+
+struct scene_control {
+  uint8_t buffer;
+} sceneControl;
 
 KIMaip knxIno(KNX_DATAREADY, KNX_BUS);
-DPT cmdLed(OBJ_CMD_LED, &knxIno);
-DPT statLed(OBJ_ST_LED, &knxIno);
-DPT cmdButton(OBJ_CMD_BUTTON, &knxIno);
-DPT statButton(OBJ_ST_BUTTON, &knxIno);
+DPT oby_6(OBJ_6, &knxIno);
+DPT oby_7(OBJ_7, &knxIno);
 
 // variables will change:
-bool oldButtonState = false;         // variable for reading the pushbutton status
 bool buttonPressed = true;
-bool oldLed = false;
-bool oldStatButtonKNX = false;
 
 void setup() {
-  pinMode(LED, OUTPUT);
-  digitalWrite(LED, LOW);
+  Serial.begin(SERIAL_BIT_RATE);
   pinMode(BUTTON, INPUT_PULLUP); 
 }
 
 void loop() {
-
-  bool newStatButtonKNX;
-  bool ledStatus;
-    
+  
   // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
   if ((digitalRead(BUTTON) == LOW) && (buttonPressed == false)) {    
     buttonPressed = true;
-    oldButtonState = !oldButtonState;
-    cmdButton.setValue(oldButtonState);    
+    if (sceneControl.buffer > 255) sceneControl.buffer = 0;
+    oby_6.setValue(sceneControl);
+    sceneControl.buffer++;
   } 
   
   if (digitalRead(BUTTON) == HIGH) {
     buttonPressed = false;
   }
 
-  if (oldLed != digitalRead(LED)){
-    oldLed = !oldLed;
-    statLed.setValue(oldLed);    
-  }
-  
-  if (knxIno.recive()) {    
-    cmdLed.getValue(ledStatus);
-    digitalWrite(LED, ledStatus);
-    statButton.getValue(newStatButtonKNX);
-    if (oldStatButtonKNX != newStatButtonKNX) {
-      statButton.getValue(oldButtonState);
-      statButton.getValue(oldStatButtonKNX);
-    }
+  if (knxIno.recive()) {
+    oby_7.getValue(sceneControl);
+    Serial.println(sceneControl.buffer, HEX);
   }
 
-  statLed.responseValue(ledStatus);
-  cmdButton.responseValue(oldButtonState);
+  oby_6.responseValue(sceneControl);
+  delay(100);
 }

@@ -1,3 +1,14 @@
-KIMaip			KEYWORD1
-DPT				KEYWORD2
-UserParameter	KEYWORD2
+# Syntax Coloring Map For Arduino-KIMlib
+
+# Class (KEYWORD3)
+KIMaip			KEYWORD3
+DPT				KEYWORD3
+UserParameter	KEYWORD3
+
+# Methods and Functions (KEYWORD2)
+
+# Instances (KEYWORD2)
+
+# Datatypes (KEYWORD1)
+
+# Constants (LITERAL1)

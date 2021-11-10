@@ -168,72 +168,79 @@ class UserParameter
 		uint8_t _value;
 		KIMaip *_kimaid;
 };
-
-template<class T>
+/*
+enum KNXdataType {
+  KNX_1BIT,
+  KNX_2BIT,
+  KNX_4BIT
+};
+*/
 class DPT
 {
 	public:
 		DPT(uint8_t x, KIMaip *kimid)
 		{
-			_value = T();
+			//_value = T();
 			_id = x;
 			_kimaid = kimid;
 		}
-		
-		void setValue(T x)
+		template<class T>
+		void setValue(T& value)
 		{
+			const byte* p = (const byte*)(const void*)&value;
 			uint8_t len = sizeof(T);
-			int y = len;
+			int y = len - 1;
 			for (int i=0; i < len; i++) {
-				y--;
-				_kimaid->buf[i] = ((byte *) &x)[y];
+				//y--;
+				_kimaid->buf[i] = ((byte *) p)[y--];
 			}
 			_kimaid->sendValue(_id, len);
 		}
-		
-		T getValue()
+		template<class T>
+		void getValue(T& value)
 		{
-		  union u_tag {                              // Siccome la temperatura è un dato FLOAT, si usa la funzione Union per "impacchettare" i 4 BYTE che la compongono.
+			byte* p = (byte*)(void*)&value;
+		  /*union u_tag {                              // Siccome la temperatura è un dato FLOAT, si usa la funzione Union per "impacchettare" i 4 BYTE che la compongono.
 			T temp ;                         // Se copi dentro "u.temp_float" un valore float automaticamente ottieni i relativi quattro byte nel array "u.temp_byte[n]", con n compreso tra 0 e 3,
 			byte temp_byte[sizeof(T)] ;                        // Viceversa se copy nel array i quattro byte, ottieni il tuo valore float dentro u.temp_float.
-		  } u; 
+		  } u; */
 		  uint8_t len = sizeof(T);
-		  int y = 0;
-
+		  int y = len + 1;
 		  if (_kimaid->getRXdato() == _id) {
 			switch (_kimaid->getRXcommand()) {
 			  case VALUE_RECEIVE: //20
 				if (_id == _kimaid->getIdDPTRead()) _kimaid->setIdDPTRead(-1);
-				y = len + 2;
 				for (int i=0; i < len; i++) {
-				  y--;
-				  u.temp_byte[i] = _kimaid->buf[y];
+				  //y--;
+				  //u.temp_byte[i]
+				  *p++ = _kimaid->buf[y--];
 				}
-				_value = u.temp;
+				//_value = u.temp;
 				break;
 			
 			}        
 		  }
-		  return _value;
+		  //return _value;
 		}
-
-		void responseValue(T x)
+		template<class T>
+		void responseValue(T& value)
 		{
-			union u_tag {                              // Siccome la temperatura è un dato FLOAT, si usa la funzione Union per "impacchettare" i 4 BYTE che la compongono.
+			/*union u_tag {                              // Siccome la temperatura è un dato FLOAT, si usa la funzione Union per "impacchettare" i 4 BYTE che la compongono.
 			  T temp ;                         // Se copi dentro "u.temp_float" un valore float automaticamente ottieni i relativi quattro byte nel array "u.temp_byte[n]", con n compreso tra 0 e 3,
 				byte temp_byte[sizeof(T)] ;                        // Viceversa se copy nel array i quattro byte, ottieni il tuo valore float dentro u.temp_float.
-			} u;
-			uint8_t len = sizeof(T);
-			int y = 0;
+			} u;*/
+			byte* p = (byte*)(void*)&value;
+			//uint8_t len = sizeof(T);
+			//int y = 0;
 			if (_kimaid->getRXdato() == _id) {   
 				switch (_kimaid->getRXcommand()) {
 				  case VALUE_READ_RECEIVE: //21
 				  
-					u.temp = x;
-					y = len + 1;
-					for (int i=0; i < len; i++) {
-					  y--;
-					  _kimaid->buf[i] = u.temp_byte[y];
+					//u.temp = x;
+					//y = len + 1;
+					for (int i=0; i < sizeof(T); i++) {
+					  //y--;
+					  _kimaid->buf[i] = *p++; //u.temp_byte[y];
 					}
 					
 					_kimaid->sendResponseValue(_id, sizeof(T)); 
@@ -241,7 +248,7 @@ class DPT
 				}
 			}
 		}
-
+		
 		void getStatusValue()
 		{			
 		  if (!_kimaid->isReadBusy()) {    
@@ -250,15 +257,15 @@ class DPT
 			_kimaid->startReadTimeout();
 		  }
 		}
-
+		/*template<class T>
 		void setStatusValue(T x)
 		{
-		  _value = x;
-		}
+		  //_value = x;
+		}*/
 		
 	private:
 		byte _id;
-		T _value;
+		//T _value;
 		KIMaip *_kimaid;
 };
 #endif

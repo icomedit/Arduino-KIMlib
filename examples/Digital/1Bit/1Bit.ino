@@ -25,22 +25,19 @@
 #define BUTTON            8     // Pin pulsante S3
 
 // Object definition scope in ETS exacly sequnce respect
-#define OBJ_CMD_LED       0
-#define OBJ_ST_LED        1
-#define OBJ_CMD_BUTTON    2
-#define OBJ_ST_BUTTON     3
+#define OBJ_0             0  // 1Bit Write da BUS
+#define OBJ_1             1  // 1Bit Read da BUS
+
+struct Switch_Control {
+  bool status = false;
+} switchControl;
 
 KIMaip knxIno(KNX_DATAREADY, KNX_BUS);
-DPT cmdLed(OBJ_CMD_LED, &knxIno);
-DPT statLed(OBJ_ST_LED, &knxIno);
-DPT cmdButton(OBJ_CMD_BUTTON, &knxIno);
-DPT statButton(OBJ_ST_BUTTON, &knxIno);
+DPT oby_0(OBJ_0, &knxIno);
+DPT oby_1(OBJ_1, &knxIno);
 
 // variables will change:
-bool oldButtonState = false;         // variable for reading the pushbutton status
 bool buttonPressed = true;
-bool oldLed = false;
-bool oldStatButtonKNX = false;
 
 void setup() {
   pinMode(LED, OUTPUT);
@@ -49,36 +46,22 @@ void setup() {
 }
 
 void loop() {
-
-  bool newStatButtonKNX;
-  bool ledStatus;
-    
   // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
   if ((digitalRead(BUTTON) == LOW) && (buttonPressed == false)) {    
     buttonPressed = true;
-    oldButtonState = !oldButtonState;
-    cmdButton.setValue(oldButtonState);    
+    switchControl.status = !switchControl.status;
+    oby_1.setValue(switchControl);
   } 
   
   if (digitalRead(BUTTON) == HIGH) {
     buttonPressed = false;
   }
 
-  if (oldLed != digitalRead(LED)){
-    oldLed = !oldLed;
-    statLed.setValue(oldLed);    
-  }
-  
-  if (knxIno.recive()) {    
-    cmdLed.getValue(ledStatus);
-    digitalWrite(LED, ledStatus);
-    statButton.getValue(newStatButtonKNX);
-    if (oldStatButtonKNX != newStatButtonKNX) {
-      statButton.getValue(oldButtonState);
-      statButton.getValue(oldStatButtonKNX);
-    }
+  if (knxIno.recive()) {
+    oby_0.getValue(switchControl);
+    digitalWrite(LED, switchControl.status);
   }
 
-  statLed.responseValue(ledStatus);
-  cmdButton.responseValue(oldButtonState);
+  oby_1.responseValue(switchControl);
+  delay(100);
 }
