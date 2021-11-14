@@ -98,7 +98,7 @@ void loop() {
       uint16_t hh = float2half(h);
       dpt_humidity.setValue(hh);
       unsigned int sensVal = analogRead(AIN);
-      byte value_byte = constrain(sensVal, 0, 255);
+      byte value_byte = map(sensVal, 0, 1024, 0, 255);
       dpt_a2byte.setValue(value_byte);
       if (i > 65535) i = 0;
       word value_word = i++;
