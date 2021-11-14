@@ -210,12 +210,14 @@ class DPT
 		template<class T>
 		void responseValue(T& value)
 		{
-			byte* p = (byte*)(void*)&value;
+			const byte* p = (const byte*)(const void*)&value;
 			if (_kimaid->getRXdato() == _id) {   
 				switch (_kimaid->getRXcommand()) {
 				  case VALUE_READ_RECEIVE:
-					for (int i=0; i < sizeof(T); i++) {
-					  _kimaid->buf[i] = *p++;
+					uint8_t len = sizeof(T);
+					int y = len - 1;
+					for (int i=0; i < len; i++) {
+						_kimaid->buf[i] = ((byte *) p)[y--];
 					}
 					_kimaid->sendResponseValue(_id, sizeof(T)); 
 					break;
