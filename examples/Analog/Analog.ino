@@ -30,12 +30,12 @@
 #define AIN               A2      // Pin analog input
 
 // Object definition scope in ETS exacly sequnce respect
-#define OBJ_PWD_LED       0
-#define OBJ_T             1
-#define OBJ_H             2
-#define OBJ_AIN_BYTE      3
-#define OBJ_AIN_WORD      4
-#define OBJ_UPTIME        5
+#define OBJ_PWD_LED       20
+#define OBJ_T             21
+#define OBJ_H             22
+#define OBJ_AIN_BYTE      23
+#define OBJ_COUNTER       24
+#define OBJ_UPTIME        25
 
 #define SERIAL_BIT_RATE   115200 // Velocità della seriale
 #define WAIT              10 
@@ -45,20 +45,24 @@ DPT dpt_pwmLed(OBJ_PWD_LED, &knxIno);
 DPT dpt_temperature(OBJ_T, &knxIno);
 DPT dpt_humidity(OBJ_H, &knxIno);
 DPT dpt_a2byte(OBJ_AIN_BYTE, &knxIno);
-DPT dpt_a2word(OBJ_AIN_WORD, &knxIno);
+DPT dpt_counter(OBJ_COUNTER, &knxIno);
 DPT dpt_uptime(OBJ_UPTIME, &knxIno);
 
-UserParameter up_txTime(&knxIno);  // secondi da 1 a 255 , 0 = OFF 
-UserParameter up_delta(&knxIno);   // 0.1 da 0.1 a 25.5 , 0 = OFF
+// Paramatri utilizzati per la gestione dell'invio ciclico o su variazione del valore di A2
+UserParameter up_txTime(&knxIno);  // secondi di ritrasmissione da 1 a 255 , 0 = OFF, non ritrasmette 
+UserParameter up_delta(&knxIno);   // da 1 a 255 , 0 = OFF
 
 AM232X AM2322;
 
 // variables will change:
-byte  pwmLed          = 0;
-float delta           = 0.0;
-unsigned long time_ms = 0;
+byte pwmLed          = 0;
+unsigned long time_ms = 5000;
 unsigned long old_millis = 0;
+float sec = 0;
 word i = 0;
+uint16_t th = 0;
+uint16_t hh = 0;
+byte value = 0;
 
 void setup() {
   Serial.begin(SERIAL_BIT_RATE);  // Inizializza Seriale
@@ -68,99 +72,65 @@ void setup() {
   if (! AM2322.begin() ) {
     Serial.println(F("Sensor HT not found"));
   }
-  delay(WAIT * 5);
-  time_ms = (unsigned long)up_txTime.getValue() * 1000.0;
-  Serial.print(F("elapse ms:\t"));
-  Serial.println(time_ms);
-  delay(WAIT * 5);
-  delta = (float)up_delta.getValue() / 10.0;
-  Serial.print(F("delta:\t\t"));
-  Serial.println(delta);
-  delay(WAIT * 50);
-  old_millis = millis();
-  Serial.println();
 }
 
 void loop() {
   
  if (time_ms != 0) {
     if ((millis() - old_millis) > time_ms) {
+
+      dpt_pwmLed.setValue(pwmLed);
+      Serial.print(F("PWM LED:\t"));
+      Serial.println(pwmLed);
+      
       // Read temperature as Celsius
       AM2322.read();
+      
       float t = AM2322.getTemperature();
+      th = float2half(t);
+      dpt_temperature.setValue(th);
       Serial.print(F("temperature:\t"));
       Serial.println(t);
-      uint16_t th = float2half(t);
-      dpt_temperature.setValue(th);
+
       float h = AM2322.getHumidity();
+      hh = float2half(h);
+      dpt_humidity.setValue(hh);
       Serial.print(F("humidity:\t"));
       Serial.println(h);
-      uint16_t hh = float2half(h);
-      dpt_humidity.setValue(hh);
+
       unsigned int sensVal = analogRead(AIN);
-      byte value_byte = map(sensVal, 0, 1024, 0, 255);
-      dpt_a2byte.setValue(value_byte);
+      value = map(sensVal, 0, 1024, 0, 255);
+      dpt_a2byte.setValue(value);
+      Serial.print(F("Send Cyclic A2:\t"));
+      Serial.println(value);
+
       if (i > 65535) i = 0;
       word value_word = i++;
-      dpt_a2word.setValue(value_word);           
-      old_millis = millis();
-      Serial.print(F("millis:\t\t0x"));
-      Serial.println(old_millis , HEX);
-      dpt_uptime.setValue(old_millis); 
+      dpt_counter.setValue(value_word);           
       Serial.print(F("pulse:\t\t"));
-      Serial.println(i);
+      Serial.println(value_word);
+      
+      sec=millis()/1000.0;
+      dpt_uptime.setValue(sec);
+      Serial.print(F("sec:\t\t"));
+      Serial.println(sec); 
+
       Serial.println();
+      old_millis = millis();
     }
   }
  
   if (knxIno.recive()) {
-#ifdef _DEBUG
-    systemEvent(knxIno.getSystemEvent());
-    delay(WAIT);
-#endif    
     dpt_pwmLed.getValue(pwmLed);
     analogWrite(LED, pwmLed);
+     
+    dpt_counter.getValue(i);
   }
 
   dpt_pwmLed.responseValue(pwmLed);  
-}
-
-static String printObj(unsigned int id)
-{
-  switch (id) {
-    case OBJ_PWD_LED:           
-        return "Button";
-        break;
-    case OBJ_T:           
-        return "Tempereature";
-        break;
-    case OBJ_H:           
-        return "Umidity";
-        break;
-    case OBJ_AIN_BYTE:           
-        return "Analog IN Byte";
-        break;
-    case OBJ_AIN_WORD:           
-        return "Analog IN Word";
-        break;
-    case OBJ_UPTIME:           
-        return "uptime";
-        break;
-  } 
-}
-
-void systemEvent(unsigned long sysEvent)
-{
-  union l_tag {                             // Siccome la temperatura è un dato FLOAT, si usa la funzione Union per "spacchettare" i 4 BYTE che la compongono.
-    unsigned long temp_long ;               // Se copi dentro "u.temp_float" un valore float automaticamente ottieni i relativi quattro byte nel array "u.temp_byte[n]", con n compreso tra 0 e 3,
-    unsigned int temp_int[2] ;              // Viceversa se copy nel array i quattro byte, ottieni il tuo valore float dentro u.temp_float.
-  } l;
-  l.temp_long = sysEvent;
-  unsigned int idEvent = l.temp_int[1];
-  unsigned int objN = l.temp_int[0];
-
-  Serial.print(F("Sytem Event: 0x"));
-  Serial.println(l.temp_long, HEX);
-  Serial.print(printObj(objN));
-  Serial.println(printIdEvent(idEvent));
+  dpt_temperature.responseValue(th);
+  dpt_humidity.responseValue(hh);
+  dpt_a2byte.responseValue(value);
+  dpt_counter.responseValue(i);
+  dpt_uptime.responseValue(sec);
 }
