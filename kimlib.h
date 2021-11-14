@@ -23,7 +23,7 @@
 
 #define KIM_DEFAULT_ID    8     // Indirizzo I2C del Gateway KNX
 #define KIM_BUFFER_LENGTH 96
-#define KIM_WAIT          10
+#define KIM_WAIT          5
 #define KIM_READY         0x83
 #define KIM_READ_TIMEOUT  1000.0
 
