@@ -44,30 +44,6 @@ enum MessageFromKIM {
   SYSTEM_EVENT        = 0x80
 };
 
-enum KIMeventID {
-  SYS_EVENT           = 0x0100,
-  CON_TRANSPOPT_LAYER = 0x0200,
-  LOAD_STATE_MACHINE  = 0x0300,
-  OBJ_OK              = 0x0402,
-  OBJ_ERROR           = 0x0403,
-  OBJ_NO              = 0x0410
-};
-
-static String printIdEvent(unsigned int mode)
-{
-  switch (mode) {
-    case OBJ_OK:           
-        return " confirmation – OK";
-        break;
-    case OBJ_ERROR:           
-        return " confirmation – ERROR";
-        break;
-    case OBJ_NO:           
-        return " no communication";
-        break;
-  } 
-}
-
 static void kimDataRedyHandler(); //prototype for interrupt handler
 
 class KIMaip
@@ -77,18 +53,19 @@ class KIMaip
 	
     KIMaip(uint8_t pinDataReady, uint8_t pinKNXbus);
     
-	boolean recive();
-	boolean isReadBusy();
-	void startReadTimeout();
-	
-	void setDevID(int x);
+    boolean recive();
+    boolean isReadBusy();
+    boolean isBusKNXready();
+    void startReadTimeout();
+
+    void setDevID(int x);
     int getDevID();
 
     void setIdDPTRead(int x);
     int getIdDPTRead();
-  
+
     unsigned long getSystemEvent();
-	String getVersion();
+    String getVersion();
     word getKNXaddress();
     byte getProgMode();
     byte getI2Caddress();
@@ -113,7 +90,6 @@ class KIMaip
     byte addUserParameter();
  
  protected:
-	boolean isBusKNXready();
 	void readSystemParameter(int ParId);	
 	
  private: 

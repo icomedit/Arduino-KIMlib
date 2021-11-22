@@ -1,5 +1,5 @@
 /*
-    Helloworld.ino - Example for KNX module (KIM) library
+    Paramiter.ino - Example for KNX module (KIM) library
     Copyright (C) 2021  Fabio Di MIchele
     Copyright (C) 2021  Giulio Paggi
 

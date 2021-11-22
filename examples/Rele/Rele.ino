@@ -1,5 +1,5 @@
 /*
-    KIMrele.ino - Example for KNX module (KIM) library
+    Rele.ino - Example for KNX module (KIM) library
     Copyright (C) 2021  Fabio Di MIchele
 
     This program is free software: you can redistribute it and/or modify

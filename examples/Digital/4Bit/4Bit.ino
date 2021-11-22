@@ -1,5 +1,5 @@
 /*
-    Helloworld.ino - Example for KNX module (KIM) library
+    4Bit.ino - Example for KNX module (KIM) library
     Copyright (C) 2021  Fabio Di MIchele
 
     This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "kimlib.h"
+#include <kimlib.h>
 
 #define KNX_DATAREADY     2     // Pin data ready KNX
 #define KNX_BUS          12     // Pin BUS KNX OK

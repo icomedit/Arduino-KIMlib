@@ -1,5 +1,5 @@
 /*
-    Helloworld.ino - Example for KNX module (KIM) library
+    1Bit.ino - Example for KNX module (KIM) library
     Copyright (C) 2021  Fabio Di MIchele
 
     This program is free software: you can redistribute it and/or modify
