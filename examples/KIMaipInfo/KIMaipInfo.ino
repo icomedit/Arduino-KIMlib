@@ -8,8 +8,8 @@
  * Created 16 November 2021 by Fabio Di Michele
  * This code is in the public domain.
  */
- 
-#include <kimlib.h>
+
+#include <KIMlib.h>
 #include "description.h"
 
 #define KNX_DATAREADY     2      // Pin data ready KNX
@@ -120,7 +120,7 @@ void setup() {
   //do something when var equals 0200h
   Serial.print(F("State Device: "));
   if (knxIno.getDevStatus() == KIM_READY) {
-    Serial.print(F("Normal mode"));    
+    Serial.print(F("Normal mode"));
   } else {
     Serial.print(knxIno.getDevStatus(), BIN);
   }

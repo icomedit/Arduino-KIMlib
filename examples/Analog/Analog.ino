@@ -17,7 +17,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <kimlib.h>
+#include <KIMlib.h>
 #include "conversion.h"
 
 // Sonda di temperatura e umidità
@@ -38,7 +38,7 @@
 #define OBJ_UPTIME        25
 
 #define SERIAL_BIT_RATE   115200 // Velocità della seriale
-#define WAIT              10 
+#define WAIT              10
 
 KIMaip knxIno(KNX_DATAREADY, KNX_BUS);
 DPT dpt_pwmLed(OBJ_PWD_LED, &knxIno);
@@ -49,7 +49,7 @@ DPT dpt_counter(OBJ_COUNTER, &knxIno);
 DPT dpt_uptime(OBJ_UPTIME, &knxIno);
 
 // Paramatri utilizzati per la gestione dell'invio ciclico o su variazione del valore di A2
-UserParameter up_txTime(&knxIno);  // secondi di ritrasmissione da 1 a 255 , 0 = OFF, non ritrasmette 
+UserParameter up_txTime(&knxIno);  // secondi di ritrasmissione da 1 a 255 , 0 = OFF, non ritrasmette
 UserParameter up_delta(&knxIno);   // da 1 a 255 , 0 = OFF
 
 AM232X AM2322;
@@ -68,24 +68,24 @@ void setup() {
   Serial.begin(SERIAL_BIT_RATE);  // Inizializza Seriale
   pinMode(LED, OUTPUT);
   Serial.println(F("\r"));
-  
+
   if (! AM2322.begin() ) {
     Serial.println(F("Sensor HT not found"));
   }
 }
 
 void loop() {
-  
+
  if (time_ms != 0) {
     if ((millis() - old_millis) > time_ms) {
 
       dpt_pwmLed.setValue(pwmLed);
       Serial.print(F("PWM LED:\t"));
       Serial.println(pwmLed);
-      
+
       // Read temperature as Celsius
       AM2322.read();
-      
+
       float t = AM2322.getTemperature();
       th = float2half(t);
       dpt_temperature.setValue(th);
@@ -106,28 +106,28 @@ void loop() {
 
       if (i > 65535) i = 0;
       word value_word = i++;
-      dpt_counter.setValue(value_word);           
+      dpt_counter.setValue(value_word);
       Serial.print(F("pulse:\t\t"));
       Serial.println(value_word);
-      
+
       sec=millis()/1000.0;
       dpt_uptime.setValue(sec);
       Serial.print(F("sec:\t\t"));
-      Serial.println(sec); 
+      Serial.println(sec);
 
       Serial.println();
       old_millis = millis();
     }
   }
- 
+
   if (knxIno.recive()) {
     dpt_pwmLed.getValue(pwmLed);
     analogWrite(LED, pwmLed);
-     
+
     dpt_counter.getValue(i);
   }
 
-  dpt_pwmLed.responseValue(pwmLed);  
+  dpt_pwmLed.responseValue(pwmLed);
   dpt_temperature.responseValue(th);
   dpt_humidity.responseValue(hh);
   dpt_a2byte.responseValue(value);

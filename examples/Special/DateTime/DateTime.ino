@@ -17,7 +17,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <kimlib.h>
+#include <KIMlib.h>
 #include "calendarClock.h"
 
 #define KNX_DATAREADY     2      // Pin data ready KNX
@@ -50,12 +50,12 @@ void loop() {
     digitalWrite(LED_GREEN, ((datetime.seconds & 1) == 0));
     dpt_dateTime.setValue(datetime);
     digitalClockDisplay();
-    old_millis = millis();    
-  }
- 
-  if (knxIno.recive()) {    
-    dpt_dateTime.getValue(datetime);    
+    old_millis = millis();
   }
 
-  dpt_dateTime.responseValue(datetime);  
+  if (knxIno.recive()) {
+    dpt_dateTime.getValue(datetime);
+  }
+
+  dpt_dateTime.responseValue(datetime);
 }

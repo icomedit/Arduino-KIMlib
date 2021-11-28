@@ -17,7 +17,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <kimlib.h>
+#include <KIMlib.h>
 #include <EmonLib.h>             // Include Emon Library
 #include "conversion.h"
 
@@ -55,10 +55,10 @@ struct energy_t
 } energy;
 
 void setup()
-{  
+{
   Serial.begin(SERIAL_BIT_RATE);
   Serial.println(F("\r"));
-  pinMode(RELAY, OUTPUT);  
+  pinMode(RELAY, OUTPUT);
   digitalWrite(RELAY, toggle);
   emon1.current(EXT_TA, TA_CALIBRATION);     // Current: input pin, calibration.
   emon1.voltage(EXT_TV, TV_CALIBRATION, 1);  // Voltage: input pin, calibration, phase_shift
@@ -74,7 +74,7 @@ void loop()
   energy.powerFactor     = float2half(emon1.powerFactor);      //extract Power Factor into Variable
   energy.volt            = float2half(emon1.Vrms);             //extract Vrms into Variable
   energy.curr            = float2half(emon1.Irms);             //extract Irms into Variable
-  
+
   if ((millis() - old_millis) > WAIT) {
     dpt_energy.setValue(energy);
     toggle = !toggle;

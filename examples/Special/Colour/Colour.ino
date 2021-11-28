@@ -17,7 +17,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <kimlib.h>
+#include <KIMlib.h>
 
 #define KNX_DATAREADY     2      // Pin data ready KNX
 #define KNX_BUS           12     // Pin BUS KNX OK
@@ -55,16 +55,16 @@ void loop() {
   if ((millis() - old_millis) > WAIT) {
     dpt_rgbwLed.setValue(colourRGBW);
     Serial.print(F("PWM LED:\t"));
-    Serial.println(colourRGBW.green);      
+    Serial.println(colourRGBW.green);
     colourRGBW.green++;
     Serial.println();
-    old_millis = millis();      
+    old_millis = millis();
   }
- 
+
   if (knxIno.recive()) {
     dpt_rgbwLed.getValue(colourRGBW);
     analogWrite(LED_GREEN, colourRGBW.green);
   }
 
-  dpt_rgbwLed.responseValue(colourRGBW);  
+  dpt_rgbwLed.responseValue(colourRGBW);
 }

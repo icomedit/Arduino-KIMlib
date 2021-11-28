@@ -17,7 +17,7 @@
 */
 
 #include <Arduino.h>
-#include <kimlib.h>
+#include <KIMlib.h>
 #include <Wire.h>
 
 //**************************** Routine di interrupt su fronte di salita del dato disponibile ******************************

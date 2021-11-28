@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <kimlib.h>
+#include <KIMlib.h>
 
 #define KNX_DATAREADY     2     // Pin data ready KNX
 #define KNX_BUS          12     // Pin BUS KNX OK
@@ -45,31 +45,31 @@ bool oldStatButtonKNX = false;
 void setup() {
   pinMode(LED, OUTPUT);
   digitalWrite(LED, LOW);
-  pinMode(BUTTON, INPUT_PULLUP); 
+  pinMode(BUTTON, INPUT_PULLUP);
 }
 
 void loop() {
 
   bool newStatButtonKNX;
   bool ledStatus;
-    
+
   // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-  if ((digitalRead(BUTTON) == LOW) && (buttonPressed == false)) {    
+  if ((digitalRead(BUTTON) == LOW) && (buttonPressed == false)) {
     buttonPressed = true;
     oldButtonState = !oldButtonState;
-    cmdButton.setValue(oldButtonState);    
-  } 
-  
+    cmdButton.setValue(oldButtonState);
+  }
+
   if (digitalRead(BUTTON) == HIGH) {
     buttonPressed = false;
   }
 
   if (oldLed != digitalRead(LED)){
     oldLed = !oldLed;
-    statLed.setValue(oldLed);    
+    statLed.setValue(oldLed);
   }
-  
-  if (knxIno.recive()) {    
+
+  if (knxIno.recive()) {
     cmdLed.getValue(ledStatus);
     digitalWrite(LED, ledStatus);
     statButton.getValue(newStatButtonKNX);

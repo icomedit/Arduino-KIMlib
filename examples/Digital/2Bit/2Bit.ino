@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <kimlib.h>
+#include <KIMlib.h>
 
 #define KNX_DATAREADY     2     // Pin data ready KNX
 #define KNX_BUS          12     // Pin BUS KNX OK
@@ -49,20 +49,20 @@ void setup() {
   digitalWrite(LED_RED, LOW);
   pinMode(LED_GREEN, OUTPUT);
   digitalWrite(LED_GREEN, LOW);
-  pinMode(BUTTON, INPUT_PULLUP); 
+  pinMode(BUTTON, INPUT_PULLUP);
 }
 
 void loop() {
   // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-  if ((digitalRead(BUTTON) == LOW) && (buttonPressed == false)) {    
+  if ((digitalRead(BUTTON) == LOW) && (buttonPressed == false)) {
     buttonPressed = true;
     if (index > 3) index=0;
     bitWrite(switchControl.buffer, VALUE, bitRead(index, VALUE));
     bitWrite(switchControl.buffer, BLOCK, bitRead(index, BLOCK));
     oby_3.setValue(switchControl);
     index++;
-  } 
-  
+  }
+
   if (digitalRead(BUTTON) == HIGH) {
     buttonPressed = false;
   }

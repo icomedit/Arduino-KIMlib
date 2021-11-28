@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <kimlib.h>
+#include <KIMlib.h>
 
 #define KNX_DATAREADY     2     // Pin data ready KNX
 #define KNX_BUS          12     // Pin BUS KNX OK
@@ -52,22 +52,22 @@ void setup() {
   digitalWrite(LED_RED, LOW);
   pinMode(LED_PWM, OUTPUT);
   analogWrite(LED_PWM, pwm);
-  pinMode(BUTTON, INPUT_PULLUP); 
+  pinMode(BUTTON, INPUT_PULLUP);
 }
 
-void loop() { 
+void loop() {
   // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-  if ((digitalRead(BUTTON) == LOW) && (buttonPressed == false)) {    
+  if ((digitalRead(BUTTON) == LOW) && (buttonPressed == false)) {
     buttonPressed = true;
     if (index > 15) index=0;
     bitWrite(controlDimming.buffer, INTERVAL_0, bitRead(index, INTERVAL_0));
     bitWrite(controlDimming.buffer, INTERVAL_1, bitRead(index, INTERVAL_1));
-    bitWrite(controlDimming.buffer, INTERVAL_2, bitRead(index, INTERVAL_2));    
+    bitWrite(controlDimming.buffer, INTERVAL_2, bitRead(index, INTERVAL_2));
     bitWrite(controlDimming.buffer, DIRECTION, bitRead(index, DIRECTION));
     oby_5.setValue(controlDimming);
     index++;
-  } 
-  
+  }
+
   if (digitalRead(BUTTON) == HIGH) {
     buttonPressed = false;
   }

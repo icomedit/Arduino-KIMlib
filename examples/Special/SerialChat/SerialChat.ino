@@ -11,7 +11,7 @@
 
 */
 
-#include <kimlib.h>
+#include <KIMlib.h>
 #include "revers.h"
 
 #define KNX_DATAREADY     2      // Pin data ready KNX
@@ -38,34 +38,34 @@ void setup() {
   inputString.reserve(200);
   cleanArray(bufTX, TEXT_LEN);
   cleanArray(bufRX, TEXT_LEN);
-  Serial.println(F("\nText to send:")); 
+  Serial.println(F("\nText to send:"));
 }
 
 void loop() {
   // print the string when a newline arrives:
-  if (stringComplete) {    
-    inputString.getBytes(bufTX, TEXT_LEN + 1);  
-    Serial.print(F("<TX:"));    
+  if (stringComplete) {
+    inputString.getBytes(bufTX, TEXT_LEN + 1);
+    Serial.print(F("<TX:"));
 
     revereseArray(bufTX, TEXT_LEN);
-    memcpy (knxIno.buf, bufTX, TEXT_LEN); 
+    memcpy (knxIno.buf, bufTX, TEXT_LEN);
     printArray(knxIno.buf, TEXT_LEN);
-    knxIno.sendValue(OBJ_TEXT, TEXT_LEN);    
-    Serial.print(F("|"));  
-    cleanArray(bufTX, TEXT_LEN); 
-    Serial.println(inputString);  
+    knxIno.sendValue(OBJ_TEXT, TEXT_LEN);
+    Serial.print(F("|"));
+    cleanArray(bufTX, TEXT_LEN);
+    Serial.println(inputString);
 
     // clear the string:
     inputString = "";
     stringComplete = false;
   }
-  if (knxIno.recive()) { 
+  if (knxIno.recive()) {
     systemEvent(knxIno.getSystemEvent());
     delay(10);
     Serial.print(F("RX>:"));
     dpt_text.getValue(bufRX);
-    printArray(bufRX, TEXT_LEN);    
-    Serial.print(F("|")); 
+    printArray(bufRX, TEXT_LEN);
+    Serial.print(F("|"));
     for (int i = TEXT_LEN; i >= 0; i--) {
       Serial.print(bufRX[i]);
     }
@@ -78,11 +78,11 @@ static String printObj(unsigned int id)
 {
   String str = String(id);;
   switch (id) {
-    case OBJ_TEXT:           
+    case OBJ_TEXT:
         str = F("Text");
         break;
   }
-  return str; 
+  return str;
 }
 
 void systemEvent(unsigned long sysEvent)
@@ -91,7 +91,7 @@ void systemEvent(unsigned long sysEvent)
     unsigned long temp_long ;
     unsigned int temp_int[2] ;
 	} l;
-	
+
   l.temp_long = sysEvent;
   unsigned int idEvent = l.temp_int[1];
   unsigned int objN = l.temp_int[0];
@@ -106,16 +106,16 @@ static String printIdEvent(unsigned int mode)
 {
   String str = String(mode);
   switch (mode) {
-    case OBJ_OK:           
+    case OBJ_OK:
         str = F(" confirmation – OK");
         break;
-    case OBJ_ERROR:           
+    case OBJ_ERROR:
         str = F(" confirmation – ERROR");
         break;
-    case OBJ_NO:           
+    case OBJ_NO:
         str = F(" no communication");
         break;
-  } 
+  }
   return str;
 }
 
@@ -129,7 +129,7 @@ void serialEvent() {
   while (Serial.available()) {
     // get the new byte:
     char inChar = (char)Serial.read();
-    
+
     // add it to the inputString:
     inputString += inChar;
     // if the incoming character is a newline, set a flag so the main loop can

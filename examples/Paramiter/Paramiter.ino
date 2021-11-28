@@ -17,7 +17,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <kimlib.h>
+#include <KIMlib.h>
 
 #define KNX_DATAREADY     2      // Pin data ready KNX
 #define KNX_BUS           12     // Pin BUS KNX OK
@@ -35,7 +35,7 @@ KIMaip knxIno(KNX_DATAREADY, KNX_BUS);
 DPT dpt_a2byte(OBJ_AIN_BYTE, &knxIno);
 
 // Paramatri utilizzati per la gestione dell'invio ciclico o su variazione del valore di A2
-UserParameter up_txTime(&knxIno);  // secondi di ritrasmissione da 1 a 255 , 0 = OFF, non ritrasmette 
+UserParameter up_txTime(&knxIno);  // secondi di ritrasmissione da 1 a 255 , 0 = OFF, non ritrasmette
 UserParameter up_delta(&knxIno);   // da 1 a 255 , 0 = OFF
 
 // variables will change:
@@ -49,7 +49,7 @@ void setup() {
   Serial.begin(SERIAL_BIT_RATE);  // Inizializza Seriale
   pinMode(LED, OUTPUT);
   Serial.println(F("\r"));
-  
+
   time_ms = (unsigned long)up_txTime.getValue() * 1000.0;
   Serial.print(F("elapse:\t\t"));
   Serial.print(time_ms);
@@ -70,7 +70,7 @@ void loop() {
   unsigned int sensVal = analogRead(AIN);
   value = map(sensVal, 0, 1024, 0, 255);
   analogWrite(LED, value);
-  
+
   if (time_ms != 0) {
     if ((millis() - old_millis) > time_ms) {
 
@@ -78,16 +78,16 @@ void loop() {
       Serial.print(F("Send Cyclic A2:\t"));
       Serial.println(value);
       oldValue = value; // Aggiorna valore per invio
-      
+
       Serial.println();
       old_millis = millis();
     }
   }
-    
+
    if (delta != 0) {
     int constValue = constrain(value, oldValue - delta, oldValue + delta);
-   
-      if ( constValue != value ) {      
+
+      if ( constValue != value ) {
         dpt_a2byte.setValue(value);
         Serial.print(F("Send Changend A2:\t"));
         Serial.println(value);
@@ -95,6 +95,6 @@ void loop() {
         old_millis = millis(); // Aggiorna timeout per invio
       }
    }
-   
+
   dpt_a2byte.responseValue(value);
 }

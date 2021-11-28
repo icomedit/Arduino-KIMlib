@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <kimlib.h>
+#include <KIMlib.h>
 
 #define RELAY_1           7     // Pin relay 1
 #define RELAY_2           6     // Pin relay 2
@@ -65,36 +65,36 @@ void setup() {
   digitalWrite(RELAY_3, LOW);
   pinMode(RELAY_4, OUTPUT);
   digitalWrite(RELAY_4, LOW);
-  
+
    rele1.getStatusValue();
    while (knxIno.isReadBusy()) {
     if (knxIno.recive()) {
       rele1.getValue(newRele1);
-      digitalWrite(RELAY_1, newRele1);    
+      digitalWrite(RELAY_1, newRele1);
     }
    }
-  
+
    rele2.getStatusValue();
    while (knxIno.isReadBusy()) {
     if (knxIno.recive()) {
       rele2.getValue(newRele2);
-      digitalWrite(RELAY_2, newRele2);    
+      digitalWrite(RELAY_2, newRele2);
     }
    }
-   
+
    rele3.getStatusValue();
    while (knxIno.isReadBusy()) {
     if (knxIno.recive()) {
       rele3.getValue(newRele3);
-      digitalWrite(RELAY_3, newRele3);    
+      digitalWrite(RELAY_3, newRele3);
     }
    }
-   
+
    rele4.getStatusValue();
    while (knxIno.isReadBusy()) {
     if (knxIno.recive()) {
       rele4.getValue(newRele4);
-      digitalWrite(RELAY_4, newRele4);    
+      digitalWrite(RELAY_4, newRele4);
     }
    }
 }
@@ -107,28 +107,28 @@ void loop() {
     digitalWrite(RELAY_1, newRele1);
     if (oldRele1 != digitalRead(RELAY_1)){
       oldRele1 = !oldRele1;
-      statRele1.setValue(oldRele1);    
+      statRele1.setValue(oldRele1);
     }
-	  
+
 	  rele2.getValue(newRele2);
     digitalWrite(RELAY_2, newRele2);
     if (oldRele2 != digitalRead(RELAY_2)){
       oldRele2 = !oldRele2;
-      statRele2.setValue(oldRele2);    
+      statRele2.setValue(oldRele2);
     }
     rele3.getValue(newRele3);
     digitalWrite(RELAY_3, newRele3);
     if (oldRele3 != digitalRead(RELAY_3)){
       oldRele3 = !oldRele3;
-      statRele3.setValue(oldRele3);    
+      statRele3.setValue(oldRele3);
     }
     rele4.getValue(newRele4);
-    digitalWrite(RELAY_4, newRele4); 
+    digitalWrite(RELAY_4, newRele4);
     if (oldRele4 != digitalRead(RELAY_4)){
       oldRele4 = !oldRele4;
-      statRele4.setValue(oldRele4);    
+      statRele4.setValue(oldRele4);
     }
-	
+
     statRele1.responseValue(oldRele1);
     statRele2.responseValue(oldRele2);
 	  statRele3.responseValue(oldRele3);
