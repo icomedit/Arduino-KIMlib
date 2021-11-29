@@ -26,7 +26,4 @@ jobs:
       - name: arduino/arduino-lint-action
 
       # Runs a set of commands using the runners shell
-      - uses: arduino/arduino-lint-action@v1.0.0
-      with:
-        library-manager: update
-        compliance: strict
+      - uses: arduino/arduino-lint-action@v1
