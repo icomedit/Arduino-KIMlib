@@ -26,10 +26,10 @@
 #define BUTTON            8     // Pin pulsante S3
 
 // Object definition scope in ETS exacly sequnce respect
-#define OBJ_2             2  // 2Bit Write da BUS
-#define OBJ_3             3  // 2Bit Read da BUS
+#define OBJ_2            14     // 2Bit Write da BUS
+#define OBJ_3            15     // 2Bit Read da BUS
 
-#define VALUE             0	//LSB
+#define VALUE             0	    //LSB
 #define BLOCK             1
 
 struct Switch_Control {
