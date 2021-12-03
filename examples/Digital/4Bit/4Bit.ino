@@ -26,8 +26,8 @@
 #define BUTTON            8     // Pin pulsante S3
 
 // Object definition scope in ETS exacly sequnce respect
-#define OBJ_4             4  // 4Bit Write da BUS
-#define OBJ_5             5  // 4Bit Read da BUS
+#define OBJ_4            16     // 4Bit Write da BUS
+#define OBJ_5            17     // 4Bit Read da BUS
 
 #define INTERVAL_0        0
 #define INTERVAL_1        1
