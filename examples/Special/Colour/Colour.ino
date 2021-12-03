@@ -22,13 +22,15 @@
 #define KNX_DATAREADY     2      // Pin data ready KNX
 #define KNX_BUS           12     // Pin BUS KNX OK
 
-#define LED_GREEN         10     // Pin LED_BUILTIN
+#define LED_RED           10     // Pin LED_BUILTIN
+#define LED_GREEN         6      // Pin LED_BUILTIN
+#define LED_BLUE          5      // Pin LED_BUILTIN
 
 // Object definition scope in ETS exacly sequnce respect
 #define OBJ_RGBW_LED      26
 
 #define SERIAL_BIT_RATE   115200 // Velocità della seriale
-#define WAIT              5000
+#define WAIT              1000
 
 KIMaip knxIno(KNX_DATAREADY, KNX_BUS);
 DPT dpt_rgbwLed(OBJ_RGBW_LED, &knxIno);
@@ -39,31 +41,45 @@ struct Colour_RGBW {
   byte reserved = 0;
   byte white = 0;
   byte blue = 0;
-  byte green = 0;
-  byte red = 0;
+  byte green = 80;
+  byte red = 125;
 } colourRGBW;
 
 unsigned long old_millis = 0;
 
 void setup() {
   Serial.begin(SERIAL_BIT_RATE);  // Inizializza Seriale
+  pinMode(LED_RED, OUTPUT);
   pinMode(LED_GREEN, OUTPUT);
+  pinMode(LED_BLUE, OUTPUT);
   Serial.println(F("\r"));
 }
 
 void loop() {
   if ((millis() - old_millis) > WAIT) {
     dpt_rgbwLed.setValue(colourRGBW);
-    Serial.print(F("PWM LED:\t"));
-    Serial.println(colourRGBW.green);
+    Serial.print(F("PWM LED: "));
+    Serial.print(colourRGBW.red);
+    Serial.print(F(" "));
+    Serial.print(colourRGBW.green);
+    Serial.print(F(" "));
+    Serial.print(colourRGBW.blue);
+    Serial.print(F(" "));
+    Serial.print(colourRGBW.white);
+    Serial.print(F(" "));
+    Serial.print(colourRGBW.lsb, HEX);    
+    colourRGBW.red++;
     colourRGBW.green++;
+    colourRGBW.blue++;
     Serial.println();
     old_millis = millis();
   }
 
   if (knxIno.recive()) {
     dpt_rgbwLed.getValue(colourRGBW);
+    analogWrite(LED_RED, colourRGBW.red);
     analogWrite(LED_GREEN, colourRGBW.green);
+    analogWrite(LED_BLUE, colourRGBW.blue);
   }
 
   dpt_rgbwLed.responseValue(colourRGBW);
