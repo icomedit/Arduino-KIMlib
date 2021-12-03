@@ -18,7 +18,6 @@
 */
 
 #include <KIMlib.h>
-#include "conversion.h"
 
 // Sonda di temperatura e umidità
 #include <AM232X.h>
