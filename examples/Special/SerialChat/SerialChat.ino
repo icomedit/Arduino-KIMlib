@@ -12,7 +12,6 @@
 */
 
 #include <KIMlib.h>
-#include "revers.h"
 
 #define KNX_DATAREADY     2      // Pin data ready KNX
 #define KNX_BUS           12     // Pin BUS KNX OK
@@ -38,7 +37,8 @@ void setup() {
   inputString.reserve(200);
   cleanArray(bufTX, TEXT_LEN);
   cleanArray(bufRX, TEXT_LEN);
-  Serial.println(F("\nText to send:"));
+  Serial.println(F("\nSetting \"CR\" to serial monitor."));
+  Serial.println(F("Text to send:"));
 }
 
 void loop() {
@@ -47,11 +47,15 @@ void loop() {
     inputString.getBytes(bufTX, TEXT_LEN + 1);
     Serial.print(F("<TX:"));
 
-    revereseArray(bufTX, TEXT_LEN);
+    for (int i = inputString.length() - 1; i < TEXT_LEN; i++) {
+      bufTX[i] = ' ';
+    }
+
     memcpy (knxIno.buf, bufTX, TEXT_LEN);
+    
     printArray(knxIno.buf, TEXT_LEN);
     knxIno.sendValue(OBJ_TEXT, TEXT_LEN);
-    Serial.print(F("|"));
+    Serial.print(F("| "));
     cleanArray(bufTX, TEXT_LEN);
     Serial.println(inputString);
 
@@ -60,29 +64,19 @@ void loop() {
     stringComplete = false;
   }
   if (knxIno.recive()) {
-    systemEvent(knxIno.getSystemEvent());
-    delay(10);
-    Serial.print(F("RX>:"));
     dpt_text.getValue(bufRX);
-    printArray(bufRX, TEXT_LEN);
-    Serial.print(F("|"));
-    for (int i = TEXT_LEN; i >= 0; i--) {
-      Serial.print(bufRX[i]);
+    if (bufRX[TEXT_LEN - 1] != '\0') {
+      Serial.print(F("RX>:"));
+      printArray(bufRX, TEXT_LEN);
+      Serial.print(F("|"));
+      for (int i = TEXT_LEN; i >= 0; i--) {
+        Serial.print(bufRX[i]);
+      }
+      Serial.println();
+      cleanArray(bufRX, TEXT_LEN);
     }
-    Serial.println();
   }
   dpt_text.responseValue(bufRX);
-}
-
-static String printObj(unsigned int id)
-{
-  String str = String(id);;
-  switch (id) {
-    case OBJ_TEXT:
-        str = F("Text");
-        break;
-  }
-  return str;
 }
 
 void systemEvent(unsigned long sysEvent)
@@ -95,28 +89,6 @@ void systemEvent(unsigned long sysEvent)
   l.temp_long = sysEvent;
   unsigned int idEvent = l.temp_int[1];
   unsigned int objN = l.temp_int[0];
-
-  Serial.print(F("Sytem Event: 0x"));
-  Serial.println(l.temp_long, HEX);
-//  Serial.println(printObj(objN));
-//  Serial.println(printIdEvent(idEvent));
-}
-
-static String printIdEvent(unsigned int mode)
-{
-  String str = String(mode);
-  switch (mode) {
-    case OBJ_OK:
-        str = F(" confirmation – OK");
-        break;
-    case OBJ_ERROR:
-        str = F(" confirmation – ERROR");
-        break;
-    case OBJ_NO:
-        str = F(" no communication");
-        break;
-  }
-  return str;
 }
 
 /*
@@ -138,4 +110,23 @@ void serialEvent() {
       stringComplete = true;
     }
   }
+}
+
+
+//print the array
+void printArray(char arr[], size_t size)
+{
+    for (size_t i=0; i < size; i++)
+    {
+      if (i > 0) Serial.print(F(" "));
+      Serial.print(arr[i], HEX);
+    }
+}
+
+void cleanArray(char arr[], size_t size)
+{
+    for (size_t i=0; i < size; i++)
+    {
+        arr[i] = '\0';
+    }
 }
