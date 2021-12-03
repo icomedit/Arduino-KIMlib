@@ -5,7 +5,7 @@ KIMaip  KEYWORD3
 DPT KEYWORD3
 UserParameter KEYWORD3
 
-# Methods and Functions (KEYWORD2)
+# Methods (KEYWORD2)
 recive  KEYWORD2	
 isBusKNXready KEYWORD2
 getSystemEvent  KEYWORD2
@@ -27,6 +27,6 @@ setValue  KEYWORD2
 getValue  KEYWORD2
 responseValue KEYWORD2
 
-# Datatypes (KEYWORD1)
-
-# Constants (LITERAL1)
+# Functions (KEYWORD1)
+float2half  KEYWORD1
+half2float  KEYWORD1
