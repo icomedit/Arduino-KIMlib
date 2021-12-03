@@ -24,8 +24,8 @@
 #define BUTTON            8     // Pin pulsante S3
 
 // Object definition scope in ETS exacly sequnce respect
-#define OBJ_6             6  // 8Bit Write da BUS
-#define OBJ_7             7  // 8Bit Read da BUS
+#define OBJ_6            18     // 8Bit Write da BUS
+#define OBJ_7            19     // 8Bit Read da BUS
 
 #define SERIAL_BIT_RATE   115200 // Velocità della seriale
 
