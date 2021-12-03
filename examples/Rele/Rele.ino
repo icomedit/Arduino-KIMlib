@@ -27,14 +27,14 @@
 #define KNX_BUS           12    // Stato BUS KNX
 
 // Object definition scope in ETS exacly sequnce respect
-#define OBJ_RELE1     0
-#define STAT_RELE1    1
-#define OBJ_RELE2     2
-#define STAT_RELE2    3
-#define OBJ_RELE3     4
-#define STAT_RELE3    5
-#define OBJ_RELE4     6
-#define STAT_RELE4    7
+#define OBJ_RELE1     4
+#define STAT_RELE1    5
+#define OBJ_RELE2     6
+#define STAT_RELE2    7
+#define OBJ_RELE3     8
+#define STAT_RELE3    9
+#define OBJ_RELE4     10
+#define STAT_RELE4    11
 
 KIMaip knxIno(KNX_DATAREADY, KNX_BUS);
 DPT rele1(OBJ_RELE1, &knxIno);
