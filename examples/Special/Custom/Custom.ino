@@ -19,7 +19,6 @@
 
 #include <KIMlib.h>
 #include <EmonLib.h>             // Include Emon Library
-#include "conversion.h"
 
 EnergyMonitor emon1;             // Create an instance
 
