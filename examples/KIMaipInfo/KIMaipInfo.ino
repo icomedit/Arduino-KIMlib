@@ -10,7 +10,6 @@
  */
 
 #include <KIMlib.h>
-#include "description.h"
 
 #define KNX_DATAREADY     2      // Pin data ready KNX
 #define KNX_BUS           12     // Pin BUS KNX OK
@@ -19,6 +18,9 @@
 #define WAIT              10
 
 KIMaip knxIno(KNX_DATAREADY, KNX_BUS);
+
+char* sPriorityMode[3] {"ETS", "I2C", "Default"};
+char* sBool[2] {"NO ", "YES"};
 
 void setup() {
   // Initialize serial
@@ -46,7 +48,6 @@ void setup() {
   delay(WAIT);
   //do something when var equals 0002h
   Serial.print(F("KNX Address: "));
-  //Serial.print(knxIno.getKNXaddress(),BIN);
   word address = knxIno.getKNXaddress();
   byte digit[3];
 
@@ -54,19 +55,19 @@ void setup() {
   digit[1] = (byte) ((address & 0x00F0) >> 4);
   digit[0] = (byte) ((address & 0x000F));
   for (int i = 0; i < 3; i++) {
-    if (i > 0) Serial.print(F("/"));
+    if (i > 0) Serial.print(F("."));
     Serial.print(digit[i], DEC);
   }
   Serial.println();
   delay(WAIT);
   //do something when var equals 0003h
   Serial.print(F("Programming Mode: "));
-  Serial.print(priorityMode(knxIno.getProgMode()));
+  Serial.print(sPriorityMode[knxIno.getProgMode()]);
   Serial.println();
   delay(WAIT);
   //do something when var equals 0005h
-  Serial.print(F("I2C Address: ? "));
-  Serial.print(priorityMode(knxIno.getI2Caddress()));
+  Serial.print(F("I2C Address to: "));
+  Serial.print(sPriorityMode[knxIno.getI2Caddress()]);
   Serial.println();
   delay(WAIT);
   //do something when var equals 0006h
@@ -81,7 +82,7 @@ void setup() {
   delay(WAIT);
   //do something when var equals 0012h
   Serial.print(F("Enable Error-Message: "));
-  Serial.print(sino(knxIno.getEnableError()));
+  Serial.print(sBool[knxIno.getEnableError()]);
   Serial.println();
   delay(WAIT);
   //do something when var equals 0020h
@@ -114,7 +115,7 @@ void setup() {
   delay(WAIT);
   //do something when var equals 0110h
   Serial.print(F("GroupLink Disabled: "));
-  Serial.print(sino(knxIno.getGroupLink()));
+  Serial.print(sBool[knxIno.getGroupLink()]);
   Serial.println();
   delay(WAIT);
   //do something when var equals 0200h
