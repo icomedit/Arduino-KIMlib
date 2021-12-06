@@ -1,32 +1,32 @@
 # Syntax Coloring Map For Arduino-KIMlib
 
-# Class (KEYWORD3)
-KIMaip  KEYWORD3
-DPT KEYWORD3
-UserParameter KEYWORD3
+# Class
+KIMaip	KEYWORD1
+DPT	KEYWORD1
+UserParameter	KEYWORD1
 
-# Methods (KEYWORD2)
-recive  KEYWORD2	
-isBusKNXready KEYWORD2
-getSystemEvent  KEYWORD2
-getVersion  KEYWORD2
-getKNXaddress KEYWORD2
-getProgMode KEYWORD2
-getI2Caddress KEYWORD2
-getI2CacutalAddress KEYWORD2
-getSYSevent KEYWORD2
-getEnableError  KEYWORD2
-getI2Ctimeout KEYWORD2
-getIndTimeout KEYWORD2
-getMasterTimeout  KEYWORD2
-getRtySend  KEYWORD2
-getTransMode  KEYWORD2
-getGroupLink  KEYWORD2
-getDevStatus  KEYWORD2
-setValue  KEYWORD2
-getValue  KEYWORD2
-responseValue KEYWORD2
+# Methods
+recive	KEYWORD2
+isBusKNXready	KEYWORD2
+getSystemEvent	KEYWORD2
+getVersion		KEYWORD2
+getKNXaddress	KEYWORD2
+getProgMode	KEYWORD2
+getI2Caddress	KEYWORD2
+getI2CacutalAddress	KEYWORD2
+getSYSevent	KEYWORD2
+getEnableError	KEYWORD2
+getI2Ctimeout	KEYWORD2
+getIndTimeout	KEYWORD2
+getMasterTimeout	KEYWORD2
+getRtySend	KEYWORD2
+getTransMode	KEYWORD2
+getGroupLink	KEYWORD2
+getDevStatus	KEYWORD2
+setValue	KEYWORD2
+getValue	KEYWORD2
+responseValue	KEYWORD2
 
-# Functions (KEYWORD1)
-float2half  KEYWORD1
-half2float  KEYWORD1
+# Functions
+float2half	KEYWORD3
+half2float	KEYWORD3

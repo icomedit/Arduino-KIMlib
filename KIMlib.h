@@ -44,15 +44,18 @@ enum MessageFromKIM {
   SYSTEM_EVENT        = 0x80
 };
 
+// Functions
 static void kimDataRedyHandler(); //prototype for interrupt handler
+float half2float (uint16_t halfFloat);
+uint16_t float2half (float f);
 
 class KIMaip
 {
   public:
 	byte buf[KIM_BUFFER_LENGTH] = {};
-	
+
     KIMaip(uint8_t pinDataReady, uint8_t pinKNXbus);
-    
+
     boolean recive();
     boolean isReadBusy();
     boolean isBusKNXready();
@@ -82,17 +85,17 @@ class KIMaip
     byte getRXcommand();
     byte getRXdato();
     byte getRXvalue();
-	
+
 	void sendValue(int obj, byte nr);
 	void sendResponseValue(int obj, byte nr);
 	void sendReadValue(int obj);
-	
+
     byte addUserParameter();
- 
+
  protected:
-	void readSystemParameter(int ParId);	
-	
- private: 
+	void readSystemParameter(int ParId);
+
+ private:
     byte _pinBusKNX = 0;
     byte _rxLength = 0;
     int _idDev = KIM_DEFAULT_ID;
@@ -105,9 +108,9 @@ class KIMaip
 };
 
   /* *************************************  Legge i parametri di sistema   *************************************************************************
-   *  
+   *
    *  Comando per leggere i parametri del sistema
-   *  
+   *
    *************************************************************************************************************************************************  */
 enum CmdKIM {
   KIM_VERSION        = 0x0001,  // Version
@@ -135,10 +138,10 @@ class UserParameter
 		void setValue(uint8_t x);
 		uint8_t getValue();
 		int index();
-    
+
 	protected:
 		void readParameter(int address, byte nr);
-		
+
 	private:
 		uint8_t _idx;
 		uint8_t _value;
@@ -153,7 +156,7 @@ class DPT
 			_id = x;
 			_kimaid = kimid;
 		}
-    
+
 		template<class T>
 		void setValue(T& value)
 		{
@@ -179,15 +182,15 @@ class DPT
 				  *p++ = _kimaid->buf[y--];
 				}
 				break;
-			}        
+			}
 		  }
 		}
-    
+
 		template<class T>
 		void responseValue(T& value)
 		{
 			const byte* p = (const byte*)(const void*)&value;
-			if (_kimaid->getRXdato() == _id) {   
+			if (_kimaid->getRXdato() == _id) {
 				switch (_kimaid->getRXcommand()) {
 				  case VALUE_READ_RECEIVE:
 					uint8_t len = sizeof(T);
@@ -195,21 +198,21 @@ class DPT
 					for (int i=0; i < len; i++) {
 						_kimaid->buf[i] = ((byte *) p)[y--];
 					}
-					_kimaid->sendResponseValue(_id, sizeof(T)); 
+					_kimaid->sendResponseValue(_id, sizeof(T));
 					break;
 				}
 			}
 		}
-		
+
 		void getStatusValue()
-		{			
-		  if (!_kimaid->isReadBusy()) {    
+		{
+		  if (!_kimaid->isReadBusy()) {
 			_kimaid->sendReadValue(_id);
 			_kimaid->setIdDPTRead(_id);
 			_kimaid->startReadTimeout();
 		  }
 		}
-		
+
 	private:
 		byte _id;
 		KIMaip *_kimaid;
