@@ -3,7 +3,8 @@
  * module is updated.
  *
  * Circuit:
- * - KIMaip Module attached
+ * ou can buy KIMaip KNX / EIB shield for your experiment whit Arduino.
+ * See the link: https://www.ebay.it/itm/324815210159
  *
  * Created 16 November 2021 by Fabio Di Michele
  * This code is in the public domain.
