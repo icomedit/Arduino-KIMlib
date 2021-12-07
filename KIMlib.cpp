@@ -101,9 +101,9 @@ boolean KIMaip::recive()
 
 unsigned long KIMaip::getSystemEvent()
 {
-  union l_tag {                           // Siccome la temperatura è un dato FLOAT, si usa la funzione Union per "impacchettare" i 4 BYTE che la compongono.
-	unsigned long temp_long;                // Se copi dentro "u.temp_float" un valore float automaticamente ottieni i relativi quattro byte nel array "u.temp_byte[n]", con n compreso tra 0 e 3,
-	byte temp_byte[4];                      // Viceversa se copy nel array i quattro byte, ottieni il tuo valore float dentro u.temp_float.
+  union l_tag {
+	unsigned long temp_long;
+	byte temp_byte[4];
   } l;
   int y = 3;
   if (_rxCommand == SYSTEM_EVENT) {
@@ -132,9 +132,9 @@ String KIMaip::getVersion()
 
 word KIMaip::getKNXaddress()
 {
-  union w_tag {                           // Siccome la temperatura è un dato FLOAT, si usa la funzione Union per "impacchettare" i 4 BYTE che la compongono.
-	word temp_word;                         // Se copi dentro "u.temp_float" un valore float automaticamente ottieni i relativi quattro byte nel array "u.temp_byte[n]", con n compreso tra 0 e 3,
-	byte temp_byte[2];                      // Viceversa se copy nel array i quattro byte, ottieni il tuo valore float dentro u.temp_float.
+  union w_tag {
+	word temp_word;
+	byte temp_byte[2];
   } w;
   int len = _rxLength - 3;
   this->readSystemParameter(KIM_KNX_ADDRESS);
@@ -187,9 +187,9 @@ byte KIMaip::getI2CacutalAddress()
 
 unsigned long KIMaip::getSYSevent()
 {
-  union l_tag {                           // Siccome la temperatura è un dato FLOAT, si usa la funzione Union per "impacchettare" i 4 BYTE che la compongono.
-	unsigned long temp_long;                // Se copi dentro "u.temp_float" un valore float automaticamente ottieni i relativi quattro byte nel array "u.temp_byte[n]", con n compreso tra 0 e 3,
-	byte temp_byte[4];                      // Viceversa se copy nel array i quattro byte, ottieni il tuo valore float dentro u.temp_float.
+  union l_tag {
+	unsigned long temp_long;
+	byte temp_byte[4];
   } l;
   int len = _rxLength - 3;
   this->readSystemParameter(KIM_SYS_EVENT);
@@ -449,31 +449,34 @@ void UserParameter::readParameter(int address, byte nr) {
 }
 
 // Functions
-union u_tag {
-    uint16_t temp;
-    byte temp_byte[2] ;
-}u;
-
 uint16_t float2half (float f) {
-  float v = f * 100.0f;
-  int exponent = 0;
-  for (; v < -2048.0f; v /= 2) exponent++;
-  for (; v > 2047.0f; v /= 2) exponent++;
-  long m = round(v) & 0x7FF;
-  short msb = (short) (exponent << 3 | m >> 8);
-  if (f < 0.0f) msb |= 0x80;
-  u.temp_byte[1] = msb;
-  u.temp_byte[0] = (byte)m;
-  return u.temp;
+	union u_tag {
+		uint16_t temp;
+		byte temp_byte[2] ;
+	}u;
+	float v = f * 100.0f;
+	int exponent = 0;
+	for (; v < -2048.0f; v /= 2) exponent++;
+	for (; v > 2047.0f; v /= 2) exponent++;
+	long m = round(v) & 0x7FF;
+	short msb = (short) (exponent << 3 | m >> 8);
+	if (f < 0.0f) msb |= 0x80;
+	u.temp_byte[1] = msb;
+	u.temp_byte[0] = (byte)m;
+	return u.temp;
 }
 
 float half2float (uint16_t halfFloat) {
-  u.temp = halfFloat;
-  int exponent = (u.temp_byte[0] & B01111000) >> 3;
-  int mantissa = ((u.temp_byte[0] & B00000111) << 8) | u.temp_byte[1];
+	union u_tag {
+		uint16_t temp;
+		byte temp_byte[2] ;
+	}u;
+	u.temp = halfFloat;
+	int exponent = (u.temp_byte[0] & B01111000) >> 3;
+	int mantissa = ((u.temp_byte[0] & B00000111) << 8) | u.temp_byte[1];
 
-  if(u.temp_byte[0] & B10000000) {
-    return ((-2048 + mantissa) * 0.01) * pow(2.0, exponent);
-  }
-  return (mantissa * 0.01) * pow(2.0, exponent);
+	if(u.temp_byte[0] & B10000000) {
+		return ((-2048 + mantissa) * 0.01) * pow(2.0, exponent);
+	}
+	return (mantissa * 0.01) * pow(2.0, exponent);
 }
