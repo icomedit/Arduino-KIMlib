@@ -1,11 +1,17 @@
 /*
     2Bit.ino - Example for KNX module (KIM) library
-    Copyright (C) 2021  Fabio Di MIchele
-    Copyright (C) 2021  Giulio Paggi
 
+    Send 2 bit to KNX BUS for simulate blind command (2.001) with button pressed.
+    Recive 2 bit to KNX BUS for simulate blind actuator (2.001).
+    Also it is implement responce to konnex BUS request.
+
+    Circuit:
     You can buy KIMaip KNX / EIB shield for your experiment whit Arduino.
     See the link: https://www.ebay.it/itm/324815210159
-    
+
+    Copyright (C) 2021  Fabio Di Michele
+    Copyright (C) 2021  Giulio Paggi
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -23,11 +29,11 @@
 #include <KIMlib.h>
 
 #define KNX_DATAREADY     2     // Pin data ready KNX
-#define KNX_BUS          12     // Pin BUS KNX OK
+#define KNX_BUS          12     // Status BUS KNX
 
-#define LED_RED          13     // Pin LED_BUILTIN
-#define LED_GREEN        10
-#define BUTTON            8     // Pin pulsante S3
+#define LED_RED          13     // Direction
+#define LED_GREEN        10     // Start and Stop
+#define BUTTON            8     // Pin button S3
 
 // Object definition scope in ETS exacly sequnce respect
 #define OBJ_2            14     // 2Bit Write da BUS

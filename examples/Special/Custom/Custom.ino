@@ -1,10 +1,15 @@
 /*
     Custom.ino - Example for KNX module (KIM) library
-    Copyright (C) 2021  Fabio Di MIchele
-    Copyright (C) 2021  Giulio Paggi
 
+    Send 10 bytes to KNX BUS for konnex custom value for simulate energy meter.
+    Also it is implement responce to konnex BUS request.
+
+    Circuit:
     You can buy KIMaip KNX / EIB shield for your experiment whit Arduino.
     See the link: https://www.ebay.it/itm/324815210159
+
+    Copyright (C) 2021  Fabio Di Michele
+    Copyright (C) 2021  Giulio Paggi
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,16 +31,15 @@
 EnergyMonitor emon1;             // Create an instance
 
 #define KNX_DATAREADY     2      // Pin data ready KNX
-#define KNX_BUS           12     // Pin BUS KNX OK
-#define EXT_TV            A2     // Rilevazione di tensione
-#define EXT_TA            A3     // Rilevazione di corrente
+#define KNX_BUS           12     // Status BUS KNX
+#define EXT_TV            A2     // voltage sensor
+#define EXT_TA            A3     // current sensor
 
 #define RELAY             7      // Pin relay with lamp
 
-// Object definition scope in ETS exacly sequnce respect
 #define OBJ_ENERGY        28
 
-#define SERIAL_BIT_RATE   115200 // Velocità della seriale
+#define SERIAL_BIT_RATE   115200 // Serial monitor speed
 #define TA_CALIBRATION    4.9    // SCT013 5A/1V
 #define TV_CALIBRATION    137.03 // TV homemade
 #define WAIT              60000

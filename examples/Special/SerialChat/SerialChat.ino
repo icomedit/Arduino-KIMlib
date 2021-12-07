@@ -1,25 +1,35 @@
 /*
-  Serial Chat example
+  SerialChat.ino - Serial Chat example
 
   When new serial data arrives, this sketchadds it send data to KNX bus.
   When a newline is received, the loop prints the string and clears it.
 
-  created 22 Nov 2021
-  by Fabio Di Michele
+  Circuit:
+  You can buy KIMaip KNX / EIB shield for your experiment whit Arduino.
+  See the link: https://www.ebay.it/itm/324815210159
 
-  This example code is in the public domain.
+  Copyright (C) 2021  Fabio Di Michele
+  Copyright (C) 2021  Giulio Paggi
 
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  any later version.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 #include <KIMlib.h>
 
 #define KNX_DATAREADY     2      // Pin data ready KNX
-#define KNX_BUS           12     // Pin BUS KNX OK
+#define KNX_BUS           12     // Status BUS KNX
 
-#define SERIAL_BIT_RATE   115200 // Velocità della seriale
+#define SERIAL_BIT_RATE   115200 // Serial monitor speed
 #define TEXT_LEN          14
-
-// Object definition scope in ETS exacly sequnce respect
 #define OBJ_TEXT          29
 
 KIMaip knxIno(KNX_DATAREADY, KNX_BUS);
@@ -52,7 +62,7 @@ void loop() {
     }
 
     memcpy (knxIno.buf, bufTX, TEXT_LEN);
-    
+
     printArray(knxIno.buf, TEXT_LEN);
     knxIno.sendValue(OBJ_TEXT, TEXT_LEN);
     Serial.print(F("| "));

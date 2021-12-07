@@ -1,10 +1,15 @@
 /*
     DateTime.ino - Example for KNX module (KIM) library
-    Copyright (C) 2021  Fabio Di MIchele
-    Copyright (C) 2021  Giulio Paggi
 
+    Send 8 bytes to KNX BUS for konnex datetime value (19.001).
+    Also it is implement responce to konnex BUS request.
+
+    Circuit:
     You can buy KIMaip KNX / EIB shield for your experiment whit Arduino.
     See the link: https://www.ebay.it/itm/324815210159
+
+    Copyright (C) 2021  Fabio Di Michele
+    Copyright (C) 2021  Giulio Paggi
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,24 +29,22 @@
 #include "calendarClock.h"
 
 #define KNX_DATAREADY     2      // Pin data ready KNX
-#define KNX_BUS           12     // Pin BUS KNX OK
+#define KNX_BUS           12     // Status BUS KNX
 
 #define LED_GREEN         10     // Pin LED_BUILTIN
 
-// Object definition scope in ETS exacly sequnce respect
 #define OBJ_DATETIME      27
 
-#define SERIAL_BIT_RATE   115200 // Velocità della seriale
+#define SERIAL_BIT_RATE   115200 // Serial monitor speed
 #define WAIT              1000
 
 KIMaip knxIno(KNX_DATAREADY, KNX_BUS);
 DPT dpt_dateTime(OBJ_DATETIME, &knxIno);
 
-// variables will change:
 unsigned long old_millis = 0;
 
 void setup() {
-  Serial.begin(SERIAL_BIT_RATE);  // Inizializza Seriale
+  Serial.begin(SERIAL_BIT_RATE);
   pinMode(LED_GREEN, OUTPUT);
   Serial.println(F("\r"));
   compileTime();

@@ -1,23 +1,26 @@
 /*
     Analog.ino - Example for KNX module (KIM) library
-    
+
     Send to KNX BUS the follow date:
         - temperature (9.001) and humidity (9.007) read form AM232X sensor;
         - analog input in a byte (5.005);
         - counter in 2 bytes (7.001);
         - uptime in 4 bytes (14.074).
-        
+
     Recive to KNX BUS value in PWM (5.001) for drive a led.
-    
+
     Also it read the follow KNX user parameters form KIMaip device:
         - P0 = timeout
         - P1 = delta
-        
-    Copyright (C) 2021  Fabio Di MIchele
-    Copyright (C) 2021  Giulio Paggi
 
+    Also it is implement responce to konnex BUS request.
+
+    Circuit:
     You can buy KIMaip KNX / EIB shield for your experiment whit Arduino.
     See the link: https://www.ebay.it/itm/324815210159
+    
+    Copyright (C) 2021  Fabio Di Michele
+    Copyright (C) 2021  Giulio Paggi
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -35,16 +38,16 @@
 
 #include <KIMlib.h>
 
-// It need to install the library to drive for AM2322 
+// It need to install the library to drive for AM2322
 #include <AM232X.h>
 
 #define KNX_DATAREADY     2      // Pin data ready KNX
-#define KNX_BUS           12     // Pin BUS KNX OK
+#define KNX_BUS           12     // Status BUS KNX
 
 #define LED               10     // Pin LED_BUILTIN
 #define AIN               A2     // Pin analog input
 
-// Object definition scope in ETS comunication object 
+// Object definition scope in ETS comunication object
 #define OBJ_PWD_LED       20
 #define OBJ_T             21
 #define OBJ_H             22
@@ -64,6 +67,7 @@ DPT dpt_counter(OBJ_COUNTER, &knxIno);
 DPT dpt_uptime(OBJ_UPTIME, &knxIno);
 
 // KNX parameter in sequence start on user parameter number 0
+// Object definition scope in ETS exacly sequnce respect
 UserParameter up_txTime(&knxIno);  // P0 - time out for re-trasmittion from 1 to 255 seconds; 0 = OFF, not re-trasmittion
 UserParameter up_delta(&knxIno);   // P1 - delta for re-trasmittion from 1 to 255 , 0 = OFF, not re-trasmittion
 
@@ -80,7 +84,7 @@ uint16_t hh = 0;
 byte value = 0;
 
 void setup() {
-  Serial.begin(SERIAL_BIT_RATE);  // Inizializza Seriale
+  Serial.begin(SERIAL_BIT_RATE);
   pinMode(LED, OUTPUT);
   Serial.println(F("\r"));
 

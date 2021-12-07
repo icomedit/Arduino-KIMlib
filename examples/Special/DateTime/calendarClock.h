@@ -1,6 +1,9 @@
 /*
     calendarClock.h - Example for KNX module (KIM) library
-    Copyright (C) 2021  Fabio Di MIchele
+
+    This include a internal time clock and get date and time to compile.
+
+    Copyright (C) 2021  Fabio Di Michele
     Copyright (C) 2021  Giulio Paggi
 
     This program is free software: you can redistribute it and/or modify
@@ -61,7 +64,7 @@ int dayOfWeek()
   uint16_t months[] = {
     0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365         };   // days until 1st of month
 
-  uint32_t days = year * 365;        // days until year 
+  uint32_t days = year * 365;        // days until year
   for (uint16_t i = 4; i < year; i += 4) if (LEAP_YEAR(i) ) days++;     // adjust leap years, test only multiple of 4 of course
 
   days += months[datetime.month-1] + datetime.day;    // add the days of this year
@@ -72,13 +75,13 @@ int dayOfWeek()
 
 void digitalClockDisplay() {
   // digital clock display of the time
-  Serial.print(datetime.year + YEAR_OFFSET);  
+  Serial.print(datetime.year + YEAR_OFFSET);
   Serial.print(F("/"));
-  printDigits(datetime.month);  
+  printDigits(datetime.month);
   Serial.print(F("/"));
   printDigits(datetime.day);
   Serial.print(F(" "));
-  Serial.print(dayOfWeek()); 
+  Serial.print(dayOfWeek());
   Serial.print(F(" (0x"));
   Serial.print(datetime.dayHour, HEX);
   Serial.print(F(") "));
@@ -87,12 +90,12 @@ void digitalClockDisplay() {
   printDigits(datetime.minutes);
   Serial.print(F(":"));
   printDigits(datetime.seconds);
-  Serial.println(); 
+  Serial.println();
 }
 
 /* A Function to return the number of days in
    a month
- 
+
   Month Number     Name        Number of Days
   1                January     31
   2                February    28 (non-leap) / 29 (leap)
@@ -106,7 +109,7 @@ void digitalClockDisplay() {
   10               October     31
   11               November    30
   12               December    31
- 
+
 */
 int numberOfDays ()
 {
@@ -170,7 +173,7 @@ int numberOfDays ()
 }
 
 void tickClock() {
-      
+
   if (datetime.seconds < 59) {
     datetime.seconds++;
   } else {

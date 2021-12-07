@@ -1,10 +1,15 @@
 /*
     Colour.ino - Example for KNX module (KIM) library
-    Copyright (C) 2021  Fabio Di MIchele
-    Copyright (C) 2021  Giulio Paggi
 
+    Recive 6 bytes to KNX BUS for konnex RGBW value (251.600).
+    Also it is implement responce to konnex BUS request.
+
+    Circuit:
     You can buy KIMaip KNX / EIB shield for your experiment whit Arduino.
     See the link: https://www.ebay.it/itm/324815210159
+
+    Copyright (C) 2021  Fabio Di Michele
+    Copyright (C) 2021  Giulio Paggi
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,16 +28,15 @@
 #include <KIMlib.h>
 
 #define KNX_DATAREADY     2      // Pin data ready KNX
-#define KNX_BUS           12     // Pin BUS KNX OK
+#define KNX_BUS           12     // Status BUS KNX
 
-#define LED_RED           10     // Pin LED_BUILTIN
-#define LED_GREEN         6      // Pin LED_BUILTIN
-#define LED_BLUE          5      // Pin LED_BUILTIN
+#define LED_RED           10     // Pin Red   on RGB LED
+#define LED_GREEN         6      // Pin Green on RGB LED
+#define LED_BLUE          5      // Pin Blue  on RGB LED
 
-// Object definition scope in ETS exacly sequnce respect
 #define OBJ_RGBW_LED      26
 
-#define SERIAL_BIT_RATE   115200 // Velocità della seriale
+#define SERIAL_BIT_RATE   115200 // Serial monitor speed
 #define WAIT              1000
 
 KIMaip knxIno(KNX_DATAREADY, KNX_BUS);
@@ -51,7 +55,7 @@ struct Colour_RGBW {
 unsigned long old_millis = 0;
 
 void setup() {
-  Serial.begin(SERIAL_BIT_RATE);  // Inizializza Seriale
+  Serial.begin(SERIAL_BIT_RATE);
   pinMode(LED_RED, OUTPUT);
   pinMode(LED_GREEN, OUTPUT);
   pinMode(LED_BLUE, OUTPUT);

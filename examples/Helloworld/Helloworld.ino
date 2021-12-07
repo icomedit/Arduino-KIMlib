@@ -1,10 +1,22 @@
 /*
     Helloworld.ino - Example for KNX module (KIM) library
-    Copyright (C) 2021  Fabio Di MIchele
-    Copyright (C) 2021  Giulio Paggi
-    
+
+    Send to KNX BUS the follow date:
+        - button status (1.001);
+        - led status (1.001).
+
+    Recive to KNX BUS the follow date:
+        - button toggle status (1.001);
+        - led command (1.001).
+
+    Also it is implement responce to konnex BUS request.
+
+    Circuit:
     You can buy KIMaip KNX / EIB shield for your experiment whit Arduino.
     See the link: https://www.ebay.it/itm/324815210159
+
+    Copyright (C) 2021  Fabio Di Michele
+    Copyright (C) 2021  Giulio Paggi
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,12 +35,11 @@
 #include <KIMlib.h>
 
 #define KNX_DATAREADY     2     // Pin data ready KNX
-#define KNX_BUS          12     // Pin BUS KNX OK
+#define KNX_BUS          12     // Status BUS KNX
 
 #define LED              13     // Pin LED_BUILTIN
-#define BUTTON            8     // Pin pulsante S3
+#define BUTTON            8     // Pin button S3
 
-// Object definition scope in ETS exacly sequnce respect
 #define OBJ_CMD_LED       0
 #define OBJ_ST_LED        1
 #define OBJ_CMD_BUTTON    2
@@ -40,8 +51,8 @@ DPT statLed(OBJ_ST_LED, &knxIno);
 DPT cmdButton(OBJ_CMD_BUTTON, &knxIno);
 DPT statButton(OBJ_ST_BUTTON, &knxIno);
 
-// variables will change:
-bool oldButtonState = false;         // variable for reading the pushbutton status
+// variable for reading the pushbutton status
+bool oldButtonState = false;
 bool buttonPressed = true;
 bool oldLed = false;
 bool oldStatButtonKNX = false;

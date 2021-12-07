@@ -1,11 +1,20 @@
 /*
     Rele.ino - Example for KNX module (KIM) library
-    Copyright (C) 2021  Fabio Di MIchele
-    Copyright (C) 2021  Giulio Paggi
 
+    Send to KNX BUS the status rele 1 to 4 (1.001).
+    Recive to KNX BUS the command rele 1 to 4 (1.001).
+    Also it is implement responce to konnex BUS request.
+
+    Circuit:
     You can buy KIMaip KNX / EIB shield for your experiment whit Arduino.
     See the link: https://www.ebay.it/itm/324815210159
-    
+
+    You can use 4 channel realy shield like to:
+    https://www.plexishop.it/it/shield-relay-a-4-canali-per-arduino-3a.html
+
+    Copyright (C) 2021  Fabio Di Michele
+    Copyright (C) 2021  Giulio Paggi
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -27,10 +36,9 @@
 #define RELAY_3           5     // Pin relay 3
 #define RELAY_4           4     // Pin relay 4
 
-#define KNX_DATAREADY     2     // Pin 1 Gateway KNX
-#define KNX_BUS           12    // Stato BUS KNX
+#define KNX_DATAREADY     2     // Pin data ready KNX
+#define KNX_BUS           12    // Status BUS KNX
 
-// Object definition scope in ETS exacly sequnce respect
 #define OBJ_RELE1     4
 #define STAT_RELE1    5
 #define OBJ_RELE2     6
