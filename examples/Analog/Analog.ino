@@ -29,7 +29,7 @@
 #define KNX_BUS           12     // Pin BUS KNX OK
 
 #define LED               10     // Pin LED_BUILTIN
-#define AIN               A2      // Pin analog input
+#define AIN               A2     // Pin analog input
 
 // Object definition scope in ETS exacly sequnce respect
 #define OBJ_PWD_LED       20
