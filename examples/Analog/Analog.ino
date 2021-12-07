@@ -1,5 +1,18 @@
 /*
     Analog.ino - Example for KNX module (KIM) library
+    
+    Send to KNX BUS the follow date:
+        - temperature (9.001) and humidity (9.007) read form AM232X sensor;
+        - analog input in a byte (5.005);
+        - counter in 2 bytes (7.001);
+        - uptime in 4 bytes (14.074).
+        
+    Recive to KNX BUS value in PWM (5.001) for drive a led.
+    
+    Also it read the follow KNX user parameters form KIMaip device:
+        - P0 = timeout
+        - P1 = delta
+        
     Copyright (C) 2021  Fabio Di MIchele
     Copyright (C) 2021  Giulio Paggi
 
@@ -22,7 +35,7 @@
 
 #include <KIMlib.h>
 
-// Sonda di temperatura e umidità
+// It need to install the library to drive for AM2322 
 #include <AM232X.h>
 
 #define KNX_DATAREADY     2      // Pin data ready KNX
@@ -31,7 +44,7 @@
 #define LED               10     // Pin LED_BUILTIN
 #define AIN               A2     // Pin analog input
 
-// Object definition scope in ETS exacly sequnce respect
+// Object definition scope in ETS comunication object 
 #define OBJ_PWD_LED       20
 #define OBJ_T             21
 #define OBJ_H             22
@@ -39,7 +52,7 @@
 #define OBJ_COUNTER       24
 #define OBJ_UPTIME        25
 
-#define SERIAL_BIT_RATE   115200 // Velocità della seriale
+#define SERIAL_BIT_RATE   115200 // Serial monitor speed
 #define WAIT              10
 
 KIMaip knxIno(KNX_DATAREADY, KNX_BUS);
@@ -50,9 +63,9 @@ DPT dpt_a2byte(OBJ_AIN_BYTE, &knxIno);
 DPT dpt_counter(OBJ_COUNTER, &knxIno);
 DPT dpt_uptime(OBJ_UPTIME, &knxIno);
 
-// Paramatri utilizzati per la gestione dell'invio ciclico o su variazione del valore di A2
-UserParameter up_txTime(&knxIno);  // secondi di ritrasmissione da 1 a 255 , 0 = OFF, non ritrasmette
-UserParameter up_delta(&knxIno);   // da 1 a 255 , 0 = OFF
+// KNX parameter in sequence start on user parameter number 0
+UserParameter up_txTime(&knxIno);  // P0 - time out for re-trasmittion from 1 to 255 seconds; 0 = OFF, not re-trasmittion
+UserParameter up_delta(&knxIno);   // P1 - delta for re-trasmittion from 1 to 255 , 0 = OFF, not re-trasmittion
 
 AM232X AM2322;
 
