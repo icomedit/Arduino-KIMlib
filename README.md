@@ -12,4 +12,4 @@ This library is intended to use the module directly to an application controller
 
 You can buy KIMaip KNX / EIB shield for your experiment whit Arduino. 
 See the link: https://www.ebay.it/itm/324815210159
-Enjoy.
+Enjoy. :-)
