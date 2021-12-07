@@ -6,6 +6,7 @@ This design for KNX I2C Interface module KIMaip, it consists of a microcontrolle
 It is esay to read and wirite KNX comunication object or KNX parameter into KIMaip device.
 
 You can write a program logic with Arduino IDE (C++), next step, you can use ETS for link the KNX object to group address and download application, configuration and address into KIMaip device.
+You can find the complete manual in the doc folder
 
 This library is intended to use the module directly to an application controller and is thus optimized as basis for end devices.
 
