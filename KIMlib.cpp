@@ -1,6 +1,6 @@
 /*
     kimlib.cpp - Library for KNX module (KIM)
-    Copyright (C) 2021  Fabio Di MIchele
+    Copyright (C) 2021  Fabio Di Michele
     Copyright (C) 2021  Giulio Paggi
 
     This program is free software: you can redistribute it and/or modify

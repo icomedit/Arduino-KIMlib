@@ -1,8 +1,8 @@
 /*
     kimlib.h - Library for KNX module (KIM)
-    Copyright (C) 2021  Fabio Di MIchele
+    Copyright (C) 2021  Fabio Di Michele
     Copyright (C) 2021  Giulio Paggi
-    
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
