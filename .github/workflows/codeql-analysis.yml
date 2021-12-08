@@ -56,9 +56,9 @@ jobs:
       uses: arduino/compile-sketches@v1.0.0
       with:
         fqbn: 'arduino:avr:uno'
-        libraries: |
-          - name: AM232X
-          - name: EmonLib
+    #    libraries: |
+    #      - name: AM232X
+    #      - name: EmonLib
 
     #  uses: github/codeql-action/autobuild@v1
 
