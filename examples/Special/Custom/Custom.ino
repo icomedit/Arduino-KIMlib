@@ -26,9 +26,6 @@
 */
 
 #include <KIMlib.h>
-#include <EmonLib.h>             // Include Emon Library
-
-EnergyMonitor emon1;             // Create an instance
 
 #define KNX_DATAREADY     2      // Pin data ready KNX
 #define KNX_BUS           12     // Status BUS KNX
@@ -40,8 +37,6 @@ EnergyMonitor emon1;             // Create an instance
 #define OBJ_ENERGY        28
 
 #define SERIAL_BIT_RATE   115200 // Serial monitor speed
-#define TA_CALIBRATION    4.9    // SCT013 5A/1V
-#define TV_CALIBRATION    137.03 // TV homemade
 #define WAIT              60000
 
 KIMaip knxIno(KNX_DATAREADY, KNX_BUS);
@@ -66,21 +61,17 @@ void setup()
   Serial.println(F("\r"));
   pinMode(RELAY, OUTPUT);
   digitalWrite(RELAY, toggle);
-  emon1.current(EXT_TA, TA_CALIBRATION);     // Current: input pin, calibration.
-  emon1.voltage(EXT_TV, TV_CALIBRATION, 1);  // Voltage: input pin, calibration, phase_shift
 }
 
 void loop()
 {
-  emon1.calcVI(20,2000);         // Calculate all. No.of half wavelengths (crossings), time-out
-  emon1.serialprint();           // Print out all variables (realpower, apparent power, Vrms, Irms, power factor)
-
+/*
   energy.realPower       = float2half(emon1.realPower);        //extract Real Power into variable
   energy.apparentPower   = float2half(emon1.apparentPower);    //extract Apparent Power into variable
   energy.powerFactor     = float2half(emon1.powerFactor);      //extract Power Factor into Variable
   energy.volt            = float2half(emon1.Vrms);             //extract Vrms into Variable
   energy.curr            = float2half(emon1.Irms);             //extract Irms into Variable
-
+*/
   if ((millis() - old_millis) > WAIT) {
     dpt_energy.setValue(energy);
     toggle = !toggle;

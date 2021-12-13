@@ -38,9 +38,6 @@
 
 #include <KIMlib.h>
 
-// It need to install the library to drive for AM2322
-#include <AM232X.h>
-
 #define KNX_DATAREADY     2      // Pin data ready KNX
 #define KNX_BUS           12     // Status BUS KNX
 
@@ -71,8 +68,6 @@ DPT dpt_uptime(OBJ_UPTIME, &knxIno);
 UserParameter up_txTime(&knxIno);  // P0 - time out for re-trasmittion from 1 to 255 seconds; 0 = OFF, not re-trasmittion
 UserParameter up_delta(&knxIno);   // P1 - delta for re-trasmittion from 1 to 255 , 0 = OFF, not re-trasmittion
 
-AM232X AM2322;
-
 // variables will change:
 byte pwmLed          = 0;
 unsigned long time_ms = 5000;
@@ -87,10 +82,6 @@ void setup() {
   Serial.begin(SERIAL_BIT_RATE);
   pinMode(LED, OUTPUT);
   Serial.println(F("\r"));
-
-  if (! AM2322.begin() ) {
-    Serial.println(F("Sensor HT not found"));
-  }
 }
 
 void loop() {
@@ -102,20 +93,17 @@ void loop() {
       Serial.print(F("PWM LED:\t"));
       Serial.println(pwmLed);
 
-      // Read temperature as Celsius
-      AM2322.read();
-
-      float t = AM2322.getTemperature();
-      th = float2half(t);
+      //float t = AM2322.getTemperature();
+      //th = float2half(t);
       dpt_temperature.setValue(th);
       Serial.print(F("temperature:\t"));
-      Serial.println(t);
+      //Serial.println(t);
 
-      float h = AM2322.getHumidity();
-      hh = float2half(h);
+      //float h = AM2322.getHumidity();
+      //hh = float2half(h);
       dpt_humidity.setValue(hh);
       Serial.print(F("humidity:\t"));
-      Serial.println(h);
+      //Serial.println(h);
 
       unsigned int sensVal = analogRead(AIN);
       value = map(sensVal, 0, 1024, 0, 255);
