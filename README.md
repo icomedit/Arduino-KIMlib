@@ -17,5 +17,7 @@ The device present in it must be configured according to the needs of your proje
     - User Parameter preset value.
 
 You can buy KIMaip KNX / EIB shield for your experiment whit Arduino.
-See the link: https://www.ebay.it/itm/324815210159
+Full version: https://www.ebay.it/itm/324815210159
+Light version: https://www.ebay.it/itm/324939880226
+
 Enjoy. :-)
