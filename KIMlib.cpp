@@ -1,6 +1,6 @@
 /*
     kimlib.cpp - Library for KNX module (KIM)
-    Copyright (C) 2021  Fabio Di Michele
+    Copyright (C) 2021  Fabio Di MIchele
     Copyright (C) 2021  Giulio Paggi
 
     This program is free software: you can redistribute it and/or modify
@@ -472,10 +472,10 @@ float half2float (uint16_t halfFloat) {
 		byte temp_byte[2] ;
 	}u;
 	u.temp = halfFloat;
-	int exponent = (u.temp_byte[0] & B01111000) >> 3;
-	int mantissa = ((u.temp_byte[0] & B00000111) << 8) | u.temp_byte[1];
+	int exponent = (u.temp_byte[1] & B01111000) >> 3;
+	int mantissa = ((u.temp_byte[1] & B00000111) << 8) | u.temp_byte[0];
 
-	if(u.temp_byte[0] & B10000000) {
+	if(u.temp_byte[1] & B10000000) {
 		return ((-2048 + mantissa) * 0.01) * pow(2.0, exponent);
 	}
 	return (mantissa * 0.01) * pow(2.0, exponent);

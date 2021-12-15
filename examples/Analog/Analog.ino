@@ -2,12 +2,16 @@
     Analog.ino - Example for KNX module (KIM) library
 
     Send to KNX BUS the follow date:
-        - temperature (9.001) and humidity (9.007) read form AM232X sensor;
+        - temperature (9.001) random values;
+        - humidity (9.007) random values;
         - analog input in a byte (5.005);
         - counter in 2 bytes (7.001);
         - uptime in 4 bytes (14.074).
 
-    Recive to KNX BUS value in PWM (5.001) for drive a led.
+    RRecive to KNX BUS the follow values
+        - temperature (9.001);
+        - humidity (9.007);
+        - drive led in PWM (5.001).
 
     Also it read the follow KNX user parameters form KIMaip device:
         - P0 = timeout
@@ -69,7 +73,7 @@ UserParameter up_txTime(&knxIno);  // P0 - time out for re-trasmittion from 1 to
 UserParameter up_delta(&knxIno);   // P1 - delta for re-trasmittion from 1 to 255 , 0 = OFF, not re-trasmittion
 
 // variables will change:
-byte pwmLed          = 0;
+byte pwmLed = 0;
 unsigned long time_ms = 5000;
 unsigned long old_millis = 0;
 float sec = 0;
@@ -81,6 +85,7 @@ byte value = 0;
 void setup() {
   Serial.begin(SERIAL_BIT_RATE);
   pinMode(LED, OUTPUT);
+  randomSeed(analogRead(AIN));
   Serial.println(F("\r"));
 }
 
@@ -92,18 +97,18 @@ void loop() {
       dpt_pwmLed.setValue(pwmLed);
       Serial.print(F("PWM LED:\t"));
       Serial.println(pwmLed);
-
-      //float t = AM2322.getTemperature();
-      //th = float2half(t);
+            
+      float t = random(-1000,2000)/100.0;
+      th = float2half(t);
       dpt_temperature.setValue(th);
       Serial.print(F("temperature:\t"));
-      //Serial.println(t);
-
-      //float h = AM2322.getHumidity();
-      //hh = float2half(h);
+      Serial.println(t);
+      
+      float h = random(100,10000)/100.0;
+      hh = float2half(h);
       dpt_humidity.setValue(hh);
       Serial.print(F("humidity:\t"));
-      //Serial.println(h);
+      Serial.println(h);
 
       unsigned int sensVal = analogRead(AIN);
       value = map(sensVal, 0, 1024, 0, 255);
@@ -126,11 +131,24 @@ void loop() {
       old_millis = millis();
     }
   }
-
+  
+  uint16_t newValue = 0;
   if (knxIno.recive()) {
     dpt_pwmLed.getValue(pwmLed);
     analogWrite(LED, pwmLed);
 
+    dpt_temperature.getValue(newValue);
+    if ((newValue != 0) && (newValue != th)) {
+      Serial.print(F("RX temperature:\t"));
+      Serial.println(half2float(newValue));
+    }
+    newValue = 0;
+    dpt_humidity.getValue(newValue);
+    if ((newValue != 0) && (newValue != hh)) {
+      Serial.print(F("RX humidity:\t"));
+      Serial.println(half2float(newValue));
+    }
+    
     dpt_counter.getValue(i);
   }
 
