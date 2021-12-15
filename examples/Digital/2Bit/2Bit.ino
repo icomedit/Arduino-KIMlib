@@ -36,8 +36,8 @@
 #define BUTTON            8     // Pin button S3
 
 // Object definition scope in ETS exacly sequnce respect
-#define OBJ_2            14     // 2Bit Write da BUS
-#define OBJ_3            15     // 2Bit Read da BUS
+#define OBJ_14           14     // 2Bit Write da BUS
+#define OBJ_15           15     // 2Bit Read da BUS
 
 #define VALUE             0	    //LSB
 #define BLOCK             1
@@ -47,8 +47,8 @@ struct Switch_Control {
 } switchControl;
 
 KIMaip knxIno(KNX_DATAREADY, KNX_BUS);
-DPT oby_2(OBJ_2, &knxIno);
-DPT oby_3(OBJ_3, &knxIno);
+DPT oby_14(OBJ_14, &knxIno);
+DPT oby_15(OBJ_15, &knxIno);
 
 // variables will change:
 bool buttonPressed = true;
@@ -69,7 +69,7 @@ void loop() {
     if (index > 3) index=0;
     bitWrite(switchControl.buffer, VALUE, bitRead(index, VALUE));
     bitWrite(switchControl.buffer, BLOCK, bitRead(index, BLOCK));
-    oby_3.setValue(switchControl);
+    oby_15.setValue(switchControl);
     index++;
   }
 
@@ -78,10 +78,10 @@ void loop() {
   }
 
   if (knxIno.recive()) {
-    oby_2.getValue(switchControl);
+    oby_14.getValue(switchControl);
     digitalWrite(LED_RED, bitRead(switchControl.buffer, VALUE));
     digitalWrite(LED_GREEN, bitRead(switchControl.buffer, BLOCK));
   }
 
-  oby_3.responseValue(switchControl);
+  oby_15.responseValue(switchControl);
 }

@@ -8,7 +8,7 @@
     Circuit:
     You can buy KIMaip KNX / EIB shield for your experiment whit Arduino.
     See the link: https://www.ebay.it/itm/324815210159
-    
+
     Copyright (C) 2021  Fabio Di Michele
     Copyright (C) 2021  Giulio Paggi
 
@@ -35,16 +35,16 @@
 #define BUTTON            8     // Pin button S3
 
 // Object definition scope in ETS exacly sequnce respect
-#define OBJ_0            12     // 1Bit Write da BUS
-#define OBJ_1            13     // 1Bit Read da BUS
+#define OBJ_12           12     // 1Bit Write da BUS
+#define OBJ_13           13     // 1Bit Read da BUS
 
 struct Switch_Control {
   bool status = false;
 } switchControl;
 
 KIMaip knxIno(KNX_DATAREADY, KNX_BUS);
-DPT oby_0(OBJ_0, &knxIno);
-DPT oby_1(OBJ_1, &knxIno);
+DPT oby_12(OBJ_12, &knxIno);
+DPT oby_13(OBJ_13, &knxIno);
 
 // variables will change:
 bool buttonPressed = true;
@@ -60,7 +60,7 @@ void loop() {
   if ((digitalRead(BUTTON) == LOW) && (buttonPressed == false)) {
     buttonPressed = true;
     switchControl.status = !switchControl.status;
-    oby_1.setValue(switchControl);
+    oby_13.setValue(switchControl);
   }
 
   if (digitalRead(BUTTON) == HIGH) {
@@ -68,10 +68,10 @@ void loop() {
   }
 
   if (knxIno.recive()) {
-    oby_0.getValue(switchControl);
+    oby_12.getValue(switchControl);
     digitalWrite(LED, switchControl.status);
   }
 
-  oby_1.responseValue(switchControl);
+  oby_13.responseValue(switchControl);
   delay(100);
 }

@@ -36,8 +36,8 @@
 #define BUTTON            8     // Pin button S3
 
 // Object definition scope in ETS exacly sequnce respect
-#define OBJ_4            16     // 4Bit Write da BUS
-#define OBJ_5            17     // 4Bit Read da BUS
+#define OBJ_16           16     // 4Bit Write da BUS
+#define OBJ_17           17     // 4Bit Read da BUS
 
 #define INTERVAL_0        0
 #define INTERVAL_1        1
@@ -49,8 +49,8 @@ struct Control_Dimming {
 } controlDimming;
 
 KIMaip knxIno(KNX_DATAREADY, KNX_BUS);
-DPT oby_4(OBJ_4, &knxIno);
-DPT oby_5(OBJ_5, &knxIno);
+DPT oby_16(OBJ_16, &knxIno);
+DPT oby_17(OBJ_17, &knxIno);
 
 bool buttonPressed = true;
 byte index = 0;
@@ -73,7 +73,7 @@ void loop() {
     bitWrite(controlDimming.buffer, INTERVAL_1, bitRead(index, INTERVAL_1));
     bitWrite(controlDimming.buffer, INTERVAL_2, bitRead(index, INTERVAL_2));
     bitWrite(controlDimming.buffer, DIRECTION, bitRead(index, DIRECTION));
-    oby_5.setValue(controlDimming);
+    oby_17.setValue(controlDimming);
     index++;
   }
 
@@ -82,12 +82,12 @@ void loop() {
   }
 
   if (knxIno.recive()) {
-    oby_4.getValue(controlDimming);
+    oby_16.getValue(controlDimming);
     digitalWrite(LED_RED, bitRead(controlDimming.buffer, DIRECTION));
     pwm = controlDimming.buffer & 0x7;
     pwm = map(pwm, 0, 15, 0, 255);
     analogWrite(LED_PWM, pwm);
   }
 
-  oby_5.responseValue(controlDimming);
+  oby_17.responseValue(controlDimming);
 }

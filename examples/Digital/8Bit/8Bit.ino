@@ -34,8 +34,8 @@
 #define BUTTON            8     // Pin pulsante S3
 
 // Object definition scope in ETS exacly sequnce respect
-#define OBJ_6            18     // 8Bit Write da BUS
-#define OBJ_7            19     // 8Bit Read da BUS
+#define OBJ_18           18     // 8Bit Write da BUS
+#define OBJ_19           19     // 8Bit Read da BUS
 
 #define SERIAL_BIT_RATE   115200 // Velocità della seriale
 
@@ -44,8 +44,8 @@ struct scene_control {
 } sceneControl;
 
 KIMaip knxIno(KNX_DATAREADY, KNX_BUS);
-DPT oby_6(OBJ_6, &knxIno);
-DPT oby_7(OBJ_7, &knxIno);
+DPT oby_18(OBJ_18, &knxIno);
+DPT oby_19(OBJ_19, &knxIno);
 
 // variables will change:
 bool buttonPressed = true;
@@ -61,7 +61,7 @@ void loop() {
   if ((digitalRead(BUTTON) == LOW) && (buttonPressed == false)) {
     buttonPressed = true;
     if (sceneControl.buffer > 255) sceneControl.buffer = 0;
-    oby_6.setValue(sceneControl);
+    oby_18.setValue(sceneControl);
     sceneControl.buffer++;
   }
 
@@ -70,10 +70,10 @@ void loop() {
   }
 
   if (knxIno.recive()) {
-    oby_7.getValue(sceneControl);
+    oby_19.getValue(sceneControl);
     Serial.println(sceneControl.buffer, HEX);
   }
 
-  oby_6.responseValue(sceneControl);
+  oby_18.responseValue(sceneControl);
   delay(100);
 }
