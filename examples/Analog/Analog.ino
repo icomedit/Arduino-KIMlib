@@ -74,31 +74,51 @@ UserParameter up_delta(&knxIno);   // P1 - delta for re-trasmittion from 1 to 25
 
 // variables will change:
 byte pwmLed = 0;
-unsigned long time_ms = 5000;
-unsigned long old_millis = 0;
+unsigned long time_ms = 0;
+unsigned long oldMillis = 0;
 float sec = 0;
 word i = 0;
 uint16_t th = 0;
 uint16_t hh = 0;
 byte value = 0;
+float oldValue = 0;
+float delta = 0.0;
+float t = 10.0;
 
 void setup() {
   Serial.begin(SERIAL_BIT_RATE);
   pinMode(LED, OUTPUT);
   randomSeed(analogRead(AIN));
-  Serial.println(F("\r"));
+  delay(WAIT * 5);
+  time_ms = (unsigned long)up_txTime.getValue() * 1000.0;
+  Serial.print(F("elapse ms:\t"));
+  Serial.println(time_ms);
+  delay(WAIT * 5);
+  delta = (float)up_delta.getValue() / 10.0;
+  Serial.print(F("delta:\t\t"));
+  Serial.println(delta);
+  delay(WAIT * 50);
+  oldMillis = millis();
+  Serial.println();
 }
 
 void loop() {
-
- if (time_ms != 0) {
-    if ((millis() - old_millis) > time_ms) {
-
+  // simulation temperature values
+  if (random(0,2) == 1) {
+    t = t + 0.05;
+  } else {
+    t = t - 0.05;
+  }
+  // disabled if paramiterss are zero 
+  if ((time_ms != 0) && (delta != 0)) {
+    // compare the time or delta
+    if (((millis() - oldMillis) > time_ms) ||
+        abs(t - oldValue) > delta)
+    {
       dpt_pwmLed.setValue(pwmLed);
       Serial.print(F("PWM LED:\t"));
       Serial.println(pwmLed);
-            
-      float t = random(-1000,2000)/100.0;
+      oldValue = t;            
       th = float2half(t);
       dpt_temperature.setValue(th);
       Serial.print(F("temperature:\t"));
@@ -128,7 +148,7 @@ void loop() {
       Serial.println(sec);
 
       Serial.println();
-      old_millis = millis();
+      oldMillis = millis();
     }
   }
   
