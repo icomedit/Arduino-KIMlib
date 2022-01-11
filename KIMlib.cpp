@@ -91,6 +91,7 @@ boolean KIMaip::recive()
 		}
 		_rxDato = int(buf[0]*256) + int(buf[1]);   // Azioni per il valore ricevuto di ciascun oggetto
 		_rxValue = int(buf[2]*256) + int(buf[3]);
+		if (_rxCommand == VALUE_RECEIVE) _idDPTRead = _rxDato;    // Se si tratta di un dato ricevuto, valorizzo l'ID 
 		kimBufFull = false;       // Reset Flag
 		return true;
 	  }
